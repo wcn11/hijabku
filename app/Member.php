@@ -6,12 +6,13 @@ use App\Notifications\Member\MemberResetPassword;
 use App\Notifications\Member\MemberVerifyEmail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
 class Member extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = "member";
+    // protected $table = 'member';
     protected $keyType = "string";
     protected $primaryKey = "id_member";
     public $incrementing = false;
@@ -21,7 +22,7 @@ class Member extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id_member', 'name', 'email', 'password',
+        'id_member', 'nama', 'email', 'password',
     ];
 
     /**

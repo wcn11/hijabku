@@ -49,7 +49,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
+            'nama' => 'required|max:255',
             'email' => 'required|email|max:255|unique:members',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -63,11 +63,21 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $id_member = Member::max("id_member");
+
+        $id_member_slash = strrpos($id_member, "-");
+
+        $id_member_substr = substr($id_member, $id_member_slash + 1) +1;
+
         return Member::create([
-            'name' => $data['name'],
+            'id_member' => "MBR-". $id_member_substr,
+            'nama' => $data['nama'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+
+        // return "berhasil_login";
+
     }
 
     /**

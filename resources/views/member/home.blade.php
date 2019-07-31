@@ -3,11 +3,14 @@
 @section('css')
     <style>
     
-        .margin-atas{
-            margin-top: 0;
+        /* .margin-atas{
+            margin-top: 0 !important;
+        } */
+        .margin-awal{
+            margin-top: 0% !important;
         }
         .carousel-awal{
-            margin-top: 10%;
+            margin-top: 6%;
         }
 
     </style>
@@ -17,7 +20,7 @@
 
         <!-- Slider -->
     
-        <div class="main_slider carousel-awal" style="background-image:url(https://benharad.co.uk/wp-content/uploads/2017/03/Untitled-2-1.jpg)">
+        <div class="main_slider carousel-awal" style="background-image:url({{ asset('images/slider_1.jpg') }})">
             <div class="container fill_height">
                 <div class="row align-items-center fill_height">
                     <div class="col">

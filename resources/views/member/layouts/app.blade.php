@@ -17,7 +17,7 @@
     
     <style>
         .margin-atas{
-            margin-top: 12%;
+            margin-top: 7%;
         }
         /* @media only screen and (max-width: 360px){
             body{
@@ -42,7 +42,7 @@
     
             <!-- Top Navigation -->
     
-            <div class="top_nav">
+            {{-- <div class="top_nav">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
     
             <!-- Main Navigation -->
     
@@ -114,14 +114,15 @@
                                     <li><a href="contact.html">contact</a></li>
                                 </ul>
                                 <ul class="navbar_user">
-                                    <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-                                    <li class="checkout">
+                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                                        <li><a href="{{ route('member.login') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a></li>
+                                        <li><a href="{{ route('member.register') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Daftar</a></li>
+                                    {{-- <li class="checkout">
                                         <a href="#">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                             <span id="checkout_items" class="checkout_items">2</span>
                                         </a>
-                                    </li>
+                                    </li> --}}
                                 </ul>
                                 <div class="hamburger_container">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
@@ -134,6 +135,105 @@
     
         </header>
     
+        <div class="modal fade" id="modal-login">
+            <div class=" modal-dialog modal-dialog-center modal-dialog-lg">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center" style="background-color:#fe4c50;">
+                        <h2 class=" modal-title-login text-white">Login</h2>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- form login --}}
+                        <div class="form form-login">
+                            @csrf
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email-login" placeholder="email anda">
+
+                                    @if($errors->has('email-login'))
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('email-login') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" name="password-login" placeholder="password anda">
+                                
+                                    @if($errors->has('password-login'))
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('password-login') }}</strong>
+                                        </span>
+                                    @endif
+
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-dark btn-login"><i class="fas fa-sign-in"></i> Login</button>
+                            </div>
+                            <hr>
+                            <div class="form-group text-center">
+                                <button type="button" class="btn btn-dark btn-daftar-slide"><i class="fas fa-sign-up"></i> Daftar</button>
+                            </div>
+                        </div>
+
+                        {{-- form daftar --}}
+                            <div class="form form-daftar">
+                                @csrf
+
+                                <div class="form-group">
+                                    <label for="nama-register">Nama</label>
+                                    <input type="text" class="form-control" name="nama-register" placeholder="nama anda">
+                                
+                                    @if($errors->has('nama-register'))
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('nama-register') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email-register">Email</label>
+                                    <input type="email" class="form-control" name="email-register" placeholder="email anda">
+                                
+                                    @if($errors->has('email-register'))
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('email-register') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="password-register">Password</label>
+                                    <input type="password" class="form-control" name="password-register" placeholder="password anda">
+                                
+                                    @if($errors->has('password-register'))
+                                        <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->first('password-register') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="password-confirmation">Konfirmasi Password</label>
+
+                                    <div class="form-group">
+                                        <input id="password-confirm" type="password" class="form-control" placeholder="ketik ulang password" name="password_confirmation" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <button type="submit" class="btn btn-dark btn-daftar"><i class="fas fa-sign-up"></i> Daftar</button>
+                                </div>
+                                <hr>
+                                <div class="form-group text-center">
+                                    <button type="button" class="btn btn-dark btn-login-slide"><i class="fas fa-sign-up"></i> Login</button>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="fs_menu_overlay"></div>
         <div class="hamburger_menu">
             <div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
@@ -257,6 +357,75 @@
     <script src="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.js') }}"></script>
     <script src="{{ asset('plugins/easing/easing.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+
+            $(".form-daftar").hide();
+
+            $(".btn-daftar-slide").click(function(){
+                $(".form-login").hide("slow");
+                $(".form-daftar").show("slow");
+                $(".modal-title-login").text("Daftar");
+            });
+
+            $(".btn-login-slide").click(function(){
+                $(".form-daftar").hide("slow");
+                $(".form-login").show("slow");
+                $(".modal-title-login").text("Login");
+            });
+
+            $(".btn-login").click(function(){
+                var email = $("[name='email-login']").val();
+                var password = $("[name='password-login']").val();
+
+                $.ajax({
+                    type:"post",
+                    url: "{{ url('member/login') }}",
+                    data: {
+                        "_token": $("[name='_token']").val(),
+                        email: email,
+                        password: password
+                    },
+                    success: function(hasil){
+                        console.log(hasil);
+                    }
+                });
+            });
+
+            $(".btn-daftar").click(function(){
+                var nama = $("[name='nama-register']").val();
+                var email = $("[name='email-register']").val();
+                var password = $("[name='password-register']").val();
+                var password_confirm = $("[name='password-confirmation']").val();
+
+                $.ajax({
+                    type:"post",
+                    url: "{{ url('member/register') }}",
+                    data: {
+                        "_token": $("[name='_token']").val(),
+                        nama: nama,
+                        email: email,
+                        password: password,
+                        password_confirmation: password_confirm
+                    },
+                    error: function(error){
+                            // if(error.responseJSON.errors.password[0] == "The password field is required."){
+                            //     // Swal.fire({
+                            //     //     title: "Gagal",
+                            //     //     text: "password harus diisi!",
+                            //     //     type: "error"
+                            //     // });
+                                
+                            // };
+                    },
+                    success: function(hasil){
+                    }
+                });
+            });
+
+        });
+    </script>
     </body>
     
     </html>
@@ -271,8 +440,8 @@
     
                         You are logged in!
                     </div> --}}
-                </div>
+                {{-- </div>
             </div>
         </div>
     </div>
-    
+     --}}
