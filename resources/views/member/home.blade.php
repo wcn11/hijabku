@@ -6,11 +6,11 @@
         /* .margin-atas{
             margin-top: 0 !important;
         } */
-        .margin-awal{
+        /* .margin-awal{
             margin-top: 0% !important;
-        }
+        } */
         .carousel-awal{
-            margin-top: 6%;
+            margin-top: 0%;
         }
 
     </style>

@@ -59,6 +59,11 @@ class LoginController extends Controller
         return view('admin.auth.login');
     }
 
+    public function username()
+    {
+        return 'username';
+    }
+
     /**
      * Log the user out of the application.
      *

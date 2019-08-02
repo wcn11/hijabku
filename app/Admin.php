@@ -11,9 +11,9 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
-    protected $table = "admin";
+    // protected $table = "admin";
     protected $keyType = "string";
-    protected $primaryKey = "id_admin";
+    protected $primaryKey = "username";
     public $incrementing = false;
 
     /**
@@ -22,7 +22,7 @@ class Admin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id_admin', 'name', 'email', 'password',
+        'username','password',
     ];
 
     /**

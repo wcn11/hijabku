@@ -23,4 +23,18 @@ Route::group(['namespace' => 'Admin'], function() {
     Route::get('email/verify','Auth\VerificationController@show')->name('admin.verification.notice');
     Route::get('email/verify/{id}','Auth\VerificationController@verify')->name('admin.verification.verify');
 
+    Route::group(['middleware' => ['admin.auth']], function(){
+
+        Route::get("barang", "BarangController@index")->name("admin.barang");
+        Route::post("barang/tambah", "BarangController@tambah_barang")->name("admin.tambah_barang");
+        Route::post("barang/hapus/{kode_barang}", "BarangController@hapus_barang")->name("admin.hapus_barang");
+        Route::post("barang/update", "BarangController@update_barang")->name("admin.update_barang");
+
+        Route::get("kategori", 'KategoriController@index')->name('admin.kategori');
+        Route::post("kategori/tambah", 'KategoriController@tambah_kategori')->name('admin.tambah_kategori');
+        Route::post("kategori/hapus/{kode_kategori}", 'KategoriController@hapus_kategori')->name('admin.hapus_kategori');
+        Route::post("kategori/update", 'KategoriController@update_kategori')->name('admin.update_kategori');
+
+    });
+
 });

@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/animate.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('styles/main_styles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('styles/responsive.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('fontawesome/css/fontawesome.min.css') }}">
     </head>
     
     <style>
@@ -114,9 +115,26 @@
                                     <li><a href="contact.html">contact</a></li>
                                 </ul>
                                 <ul class="navbar_user">
-                                        <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li>
-                                        <li><a href="{{ route('member.login') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a></li>
-                                        <li><a href="{{ route('member.register') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Daftar</a></li>
+                                        {{-- <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li> --}}
+                                        <li>
+                                            @if (Auth::guard('member')->guest())
+                                                <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                                            @else
+                                                {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
+                                                <div class="btn-group dropleft">
+                                                    <a href="javascript:void(0)" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                      <i class="fa fa-user"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu">
+                                                        <form action="{{ route('member.logout') }}" method="POST">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
+                                                        </form>
+                                                    </div>
+                                                  </div>
+                                            @endif
+                                        </li>
+                                        {{-- <li><a href="{{ route('member.register') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Daftar</a></li> --}}
                                     {{-- <li class="checkout">
                                         <a href="#">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
@@ -177,7 +195,7 @@
                         </div>
 
                         {{-- form daftar --}}
-                            <div class="form form-daftar">
+                            <form class="form form-daftar" action="{{ route('member.register') }}" method="POST">
                                 @csrf
 
                                 <div class="form-group">
@@ -222,13 +240,13 @@
                                 </div>
 
                                 <div class="form-group text-center">
-                                    <button type="submit" class="btn btn-dark btn-daftar"><i class="fas fa-sign-up"></i> Daftar</button>
+                                    <button type="button" class="btn btn-dark btn-daftar"><i class="fas fa-sign-up"></i> Daftar</button>
                                 </div>
                                 <hr>
                                 <div class="form-group text-center">
                                     <button type="button" class="btn btn-dark btn-login-slide"><i class="fas fa-sign-up"></i> Login</button>
                                 </div>
-                            </div>
+                            </form>
                     </div>
                 </div>
             </div>
@@ -357,7 +375,7 @@
     <script src="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.js') }}"></script>
     <script src="{{ asset('plugins/easing/easing.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
-    <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('sweetalert/sweetalert2.all.min.js') }}"></script>
     <script>
         $(document).ready(function(){
 
@@ -374,6 +392,10 @@
                 $(".form-login").show("slow");
                 $(".modal-title-login").text("Login");
             });
+
+            // $(".btn-daftar").click(function(){
+
+            // });
 
             $(".btn-login").click(function(){
                 var email = $("[name='email-login']").val();
@@ -397,31 +419,75 @@
                 var nama = $("[name='nama-register']").val();
                 var email = $("[name='email-register']").val();
                 var password = $("[name='password-register']").val();
-                var password_confirm = $("[name='password-confirmation']").val();
+                var password_confirm = $("[name='password_confirmation']").val();
 
-                $.ajax({
-                    type:"post",
-                    url: "{{ url('member/register') }}",
-                    data: {
-                        "_token": $("[name='_token']").val(),
-                        nama: nama,
-                        email: email,
-                        password: password,
-                        password_confirmation: password_confirm
-                    },
-                    error: function(error){
-                            // if(error.responseJSON.errors.password[0] == "The password field is required."){
-                            //     // Swal.fire({
-                            //     //     title: "Gagal",
-                            //     //     text: "password harus diisi!",
-                            //     //     type: "error"
-                            //     // });
-                                
-                            // };
-                    },
-                    success: function(hasil){
-                    }
-                });
+                if(nama == ''){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom nama harus diisi!',
+                        'error'
+                    )
+                }else if(nama.length < 6){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom nama minimal 6 huruf',
+                        'error'
+                    )
+                }else if(email == ""){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom email harus diisi!',
+                        'error'
+                    )
+                }else if(password == ""){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom password harus diisi!',
+                        'error'
+                    )
+                }else if(password.length < 6){
+                    Swal.fire(
+                        'GAGAL',
+                        'Password minimal 6 karakter',
+                        'error'
+                    )
+                }else if(password_confirm == ""){
+                    Swal.fire(
+                        'GAGAL',
+                        'Harap isi konfirmasi password!',
+                        'error'
+                    )
+                }else if(password != password_confirm){
+                    Swal.fire(
+                        'GAGAL',
+                        'Password tidak sama!',
+                        'error'
+                    )
+                }else{
+                    $.ajax({
+                        type:"post",
+                        url: "{{ url('member/register') }}",
+                        data: {
+                            "_token": $("[name='_token']").val(),
+                            nama: nama,
+                            email: email,
+                            password: password,
+                            password_confirmation: password_confirm
+                        },
+                        error: function(error){
+                            console.log(error);
+                        },
+                        success: function(hasil){
+                            Swal.fire(
+                                'Berhasil',
+                                'Berhasil Login!<br>Anda akan di alihkan',
+                                'success'
+                            )
+                            location.reload();
+                        }
+                    });
+                }
+
             });
 
         });
