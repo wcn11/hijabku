@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Barang;
 use Illuminate\Support\Facades\Session;
 use App\Kategori;
+use Illuminate\Support\Facades\File;
 
 class BarangController extends Controller
 {
@@ -23,7 +24,11 @@ class BarangController extends Controller
 
         $barang = new Barang;
 
-        $kode_kategori = $request->kode_kategori;
+        $file = $request->file("gambar_barang");
+
+        $nama_file = time()."-".$file->getClientOriginalName();
+
+        $kode_kategori = $request->kategori_barang;
 
         $kode_kategori_slash = strrpos($kode_kategori, "-");
 
@@ -35,7 +40,13 @@ class BarangController extends Controller
 
         $kode_barang_substr = substr($kode_barang, $kode_barang_slash + 1) + 1;
 
+        // masuk database
+
         $barang->kode_barang = "BRG-".$kode_kategori_substr."-".$kode_barang_substr;
+
+        // masukkan gambar ke folder gambar barang
+
+        $request->file("gambar_barang")->move("images/barang/", $nama_file);
 
         $barang->kode_kategori = $request->kategori_barang;
 
@@ -45,7 +56,7 @@ class BarangController extends Controller
 
         $barang->keterangan = $request->keterangan_barang;
 
-        $barang->gambar = $request->gambar_barang;
+        $barang->gambar = $nama_file;
 
         $barang->harga_barang = $request->harga_barang;
 
@@ -61,7 +72,16 @@ class BarangController extends Controller
 
         $barang = Barang::find($request->kode_barang);
 
-        $barang->gambar = $request->gambar_barang;
+        if($request->has("gambar_barang")){
+
+            File::delete("images/barang/".$barang->gambar);
+
+            $file = time()."-".$request->file("gambar_barang")->getClientOriginalName();
+
+            $barang->gambar = $file;
+
+            $request->file("gambar_barang")->move("images/barang/", $file);
+        }
 
         $barang->nama_barang = $request->nama_barang;
 
@@ -84,6 +104,8 @@ class BarangController extends Controller
     public function hapus_barang($kode_barang){
 
         $barang = Barang::find($kode_barang);
+
+        File::delete("images/barang/".$barang->gambar);
 
         $barang->delete();
 

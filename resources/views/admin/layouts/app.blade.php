@@ -17,7 +17,8 @@
 
   <!-- Custom styles for this template-->
   <link href="{{ asset('be/css/sb-admin-2.min.css') }}" rel="stylesheet">
-
+  <link rel="stylesheet" href="{{ asset('bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('datatable/DataTables-1.10.18/css/dataTables.bootstrap4.min.css') }}">
 </head>
     @yield('css')
 <body id="page-top">
@@ -41,7 +42,7 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="/admin">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>Dashboard</span></a>
       </li>
@@ -87,7 +88,7 @@
       </li> --}}
 
       <!-- Divider -->
-      <hr class="sidebar-divider">
+      {{-- <hr class="sidebar-divider"> --}}
 
       <!-- Heading -->
       {{-- <div class="sidebar-heading">
@@ -116,10 +117,17 @@
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="{{ route('admin.barang') }}">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Barang</span></a>
-      </li>
+          <a class="nav-link" href="{{ route('admin.member') }}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Member</span></a>
+        </li>
+
+        <!-- Nav Item - Charts -->
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('admin.barang') }}">
+            <i class="fas fa-fw fa-chart-area"></i>
+            <span>Barang</span></a>
+        </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item">
@@ -153,9 +161,9 @@
             <i class="fa fa-bars"></i>
           </button>
 
-
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
+
 
 
             <div class="topbar-divider d-none d-sm-block"></div>
@@ -174,6 +182,7 @@
                     Logout
                     </a>
               </div>
+
             </li>
 
           </ul>
@@ -515,21 +524,17 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ asset('be/vendor/jquery/jquery.min.js') }}"></script>
-  <script src="{{ asset('be/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{asset('bootstrap/dist/js/bootstrap.min.js')}}"></script>
 
   <!-- Core plugin JavaScript-->
   <script src="{{ asset('be/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="{{ asset('be/js/sb-admin-2.min.js') }}"></script>\
+  <script src="{{ asset('be/js/sb-admin-2.min.js') }}"></script>
   <script src="{{ asset('sweetalert/sweetalert2.all.min.js') }}"></script>
+  <script src="{{ asset('datatable/DataTables-1.10.18/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('datatable/DataTables-1.10.18/js/dataTables.bootstrap4.min.js') }}"></script>
 
-  <!-- Page level plugins -->
-  {{-- <script src="{{ asset('be/vendor/chart.js/Chart.min.js') }}"></script> --}}
-
-  <!-- Page level custom scripts -->
-  {{-- <script src="{{ asset('be/js/demo/chart-area-demo.js') }}"></script>
-  <script src="{{ asset('be/js/demo/chart-pie-demo.js') }}"></script> --}}
 @yield('js')
 </body>
 

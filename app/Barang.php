@@ -16,4 +16,12 @@ class Barang extends Model
     const UPDATED_AT = "diupdate";
 
     protected $fillable = ['kode_barang', 'kode_kategori', 'nama_barang', 'stok', 'keterangan', 'gambar', 'harga_barang'];
+
+    public function kategori_ke_barang(){
+        return $this->belongsTo("App\Kategori", 'kode_kategori');
+    }
+    
+    public function barang_ke_keranjang(){
+        return $this->hasMany("App\Keranjang", 'kode_barang');
+    }
 }

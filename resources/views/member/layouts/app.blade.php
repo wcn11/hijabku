@@ -6,30 +6,89 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Colo Shop Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ asset('styles/bootstrap4/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
     <link href="{{ asset('plugins/font-awesome-4.7.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/owl.theme.default.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/animate.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('styles/main_styles.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('styles/responsive.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('animate.css') }}">
     </head>
     
     <style>
         .margin-atas{
             margin-top: 7%;
         }
-        /* @media only screen and (max-width: 360px){
-            body{
-                background-color: red;
-            }
-            .margin-atas{
-                display: block;
-                margin-top: 25%;
-            }
-            
-        } */
+        .quantity {
+  position: relative;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number]
+{
+  -moz-appearance: textfield;
+}
+
+.quantity input {
+  width: 45px;
+  height: 42px;
+  line-height: 1.65;
+  float: left;
+  display: block;
+  padding: 0;
+  margin: 0;
+  padding-left: 20px;
+  border: 1px solid #eee;
+}
+
+.quantity input:focus {
+  outline: 0;
+}
+
+.quantity-nav {
+  float: left;
+  position: relative;
+  height: 42px;
+}
+
+.quantity-button {
+  position: relative;
+  cursor: pointer;
+  border-left: 1px solid #eee;
+  width: 20px;
+  text-align: center;
+  color: #333;
+  font-size: 13px;
+  font-family: "Trebuchet MS", Helvetica, sans-serif !important;
+  line-height: 1.7;
+  -webkit-transform: translateX(-100%);
+  transform: translateX(-100%);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.quantity-button.quantity-up {
+  position: absolute;
+  height: 50%;
+  top: 0;
+  border-bottom: 1px solid #eee;
+}
+
+.quantity-button.quantity-down {
+  position: absolute;
+  bottom: -1px;
+  height: 50%;
+}
     </style>
     
     @yield('css')
@@ -103,7 +162,7 @@
                     <div class="row">
                         <div class="col-lg-12 text-right">
                             <div class="logo_container">
-                                <a href="#">colo<span>shop</span></a>
+                                <a href="/">HIJAB<span>ku</span></a>
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
@@ -115,32 +174,35 @@
                                     <li><a href="contact.html">contact</a></li>
                                 </ul>
                                 <ul class="navbar_user">
-                                        {{-- <li><a href="#"><i class="fa fa-search" aria-hidden="true"></i></a></li> --}}
-                                        <li>
-                                            @if (Auth::guard('member')->guest())
-                                                <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
-                                            @else
-                                                {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
-                                                <div class="btn-group dropleft">
-                                                    <a href="javascript:void(0)" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                      <i class="fa fa-user"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu">
-                                                        <form action="{{ route('member.logout') }}" method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
-                                                        </form>
-                                                    </div>
-                                                  </div>
-                                            @endif
-                                        </li>
-                                        {{-- <li><a href="{{ route('member.register') }}"><i class="fa fa-sign-in" aria-hidden="true"></i> Daftar</a></li> --}}
-                                    {{-- <li class="checkout">
-                                        <a href="#">
+
+
+                                @if(Auth::guard("member")->check())    
+                                    <li class="checkout">
+                                        <a href="javascript:void(0)" data-target=".modal-keranjang" data-toggle="modal">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" class="checkout_items">2</span>
+                                            <span id="checkout_items" class="checkout_items">{{ Session::get("keranjang")->count() }}</span>
                                         </a>
-                                    </li> --}}
+                                    </li>
+                                @endif
+
+                                    <li>
+                                        @if (Auth::guard('member')->guest())
+                                            <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+                                        @else
+                                            {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
+                                            <div class="btn-group dropleft">
+                                                <a href="javascript:void(0)" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-user"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <form action="{{ route('member.logout') }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
+                                                    </form>
+                                                </div>
+                                                </div>
+                                        @endif
+                                    </li>
                                 </ul>
                                 <div class="hamburger_container">
                                     <i class="fa fa-bars" aria-hidden="true"></i>
@@ -212,7 +274,9 @@
                                 <div class="form-group">
                                     <label for="email-register">Email</label>
                                     <input type="email" class="form-control" name="email-register" placeholder="email anda">
-                                
+                                    <div class="invalid-feedback">
+                                            Email telah terdaftar.
+                                          </div>
                                     @if($errors->has('email-register'))
                                         <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $errors->first('email-register') }}</strong>
@@ -367,17 +431,109 @@
         </footer>
     
     </div>
+
+        
+    <div class="modal fade modal-keranjang" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <div class="">
+                    <i class="fa fa-cart-plus"></i> Keranjang anda
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="table table-border">
+                    <thead>
+                      <tr class="text-center">
+                        <th scope="col">No</th>
+                        <th scope="col">Foto</th>
+                        <th scope="col">Nama Barang</th>
+                        <th scope="col">Harga</th>
+                        <th scope="col">Jumlah</th>
+                        <th scope="col">Stok</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(Session::get('keranjang') as $k_key => $k)
+                            <tr class="text-center">
+                                <th scope="row">{{ $k_key + 1 }}</th>
+                                <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
+                                <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
+                                <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
+                                <td>
+                                    <div class="quantity">
+                                        <input type="number" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang">
+                                    </div>
+                                </td>
+                                <td>{{ $k->barang_ke_keranjang->stok }}</td>
+                                <td class="total-keranjang">{{ $k->total }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-hapus-keranjang" data-kode="{{ $k->kode_keranjang }}"> hapus</button>
+                                    <button class="btn btn-success btn-bayar-keranjang" data-kode="{{ $k->kode_keranjang }}"> bayar</button>
+                                </td>
+                            </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark"> Bayar Semua</button>
+            </div>
+          </div>
+        </div>
+      </div>
     
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <script src="{{ asset('styles/bootstrap4/popper.js') }}"></script>
-    <script src="{{ asset('styles/bootstrap4/bootstrap.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ asset('plugins/Isotope/isotope.pkgd.min.js') }}"></script>
     <script src="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.js') }}"></script>
     <script src="{{ asset('plugins/easing/easing.js') }}"></script>
-    <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('sweetalert/sweetalert2.all.min.js') }}"></script>
+    @yield("js")
     <script>
         $(document).ready(function(){
+
+            
+
+        $(".counter-keranjang").on("change" ,function(e) {
+            var jumlah = $(this).attr("data-jumlah");
+            var max = $(this).attr("max");
+            var kode_keranjang = $(this).attr("data-kode");
+            var value = $(this).val();
+            var harga = $(this).attr("data-harga");
+
+
+            $.ajax({
+                type: "post",
+                url: "{{ url('member/keranjang/update') }}",
+                data:{
+                    "_token": $("[name='_token']").val(),
+                    "kode_keranjang": kode_keranjang,
+                    "jumlah": value,
+                    "total": value * harga
+                },
+                success: function(hasil){
+                    $(".total-keranjang").text(value * harga);
+                }
+            });
+
+            // $(this).val(jumlah);
+            //if the letter is not digit then display error and don't type anything
+            // if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //     //display error message
+            //     Swal.fire(
+            //             'Hanya Angka!',
+            //             'Hanya boleh dimasukkan angka!',
+            //             'warning'
+            //         )
+            //     $(this).val(jumlah);
+            //     return false;
+            // }
+
+        });
 
             $(".form-daftar").hide();
 
@@ -401,18 +557,45 @@
                 var email = $("[name='email-login']").val();
                 var password = $("[name='password-login']").val();
 
-                $.ajax({
-                    type:"post",
-                    url: "{{ url('member/login') }}",
-                    data: {
-                        "_token": $("[name='_token']").val(),
-                        email: email,
-                        password: password
-                    },
-                    success: function(hasil){
-                        console.log(hasil);
-                    }
-                });
+                if(email == ""){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom email harus diisi!',
+                        'error'
+                    )
+                }else if(password == ""){
+                    Swal.fire(
+                        'GAGAL',
+                        'Kolom password harus diisi!',
+                        'error'
+                    )
+                }else{
+                    $.ajax({
+                        type:"post",
+                        url: "{{ url('member/login') }}",
+                        data: {
+                            "_token": $("[name='_token']").val(),
+                            email: email,
+                            password: password
+                        },
+                        error: function(error){
+                            if(error.responseJSON.errors.email[0] === "These credentials do not match our records."){
+                                Swal.fire({
+                                    title: 'Data tidak ditemukan atau salah',
+                                    html: "Email atu password salah.",
+                                    type: "error",
+                                    animation: false,
+                                    customClass: {
+                                        popup: 'animated shake'
+                                    }
+                                })
+                            }
+                        },
+                        success: function(hasil){
+                            location.reload();
+                        }
+                    });
+                }
             });
 
             $(".btn-daftar").click(function(){
@@ -475,14 +658,22 @@
                             password_confirmation: password_confirm
                         },
                         error: function(error){
-                            console.log(error);
+                            if(error.responseJSON.errors.email[0] === "The email has already been taken."){
+                                Swal.fire({
+                                    title: 'Email telah terdaftar',
+                                    html: "Email <span class='text-danger font-weight-bold'>" + email + "</span> telah terdaftar, silahkan pilih login.",
+                                    type: "error",
+                                    animation: false,
+                                    customClass: {
+                                        popup: 'animated shake'
+                                    }
+                                })
+
+                                $("[name='email-register']").addClass("is-invalid");
+                            }
                         },
                         success: function(hasil){
-                            Swal.fire(
-                                'Berhasil',
-                                'Berhasil Login!<br>Anda akan di alihkan',
-                                'success'
-                            )
+                            
                             location.reload();
                         }
                     });
@@ -491,6 +682,39 @@
             });
 
         });
+
+        jQuery('<div class="quantity-nav"><div class="quantity-button quantity-up">+</div><div class="quantity-button quantity-down">-</div></div>').insertAfter('.quantity input');
+    jQuery('.quantity').each(function() {
+      var spinner = jQuery(this),
+        input = spinner.find('input[type="number"]'),
+        btnUp = spinner.find('.quantity-up'),
+        btnDown = spinner.find('.quantity-down'),
+        min = input.attr('min'),
+        max = input.attr('max');
+
+      btnUp.click(function() {
+        var oldValue = parseFloat(input.val());
+        if (oldValue >= max) {
+          var newVal = oldValue;
+        } else {
+          var newVal = oldValue + 1;
+        }
+        spinner.find("input").val(newVal);
+        spinner.find("input").trigger("change");
+      });
+
+      btnDown.click(function() {
+        var oldValue = parseFloat(input.val());
+        if (oldValue <= min) {
+          var newVal = oldValue;
+        } else {
+          var newVal = oldValue - 1;
+        }
+        spinner.find("input").val(newVal);
+        spinner.find("input").trigger("change");
+      });
+
+    });
     </script>
     </body>
     

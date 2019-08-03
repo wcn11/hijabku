@@ -18,4 +18,8 @@ class Kategori extends Model
     // const UPDATED_AT = "diupdate";
 
     protected $fillable = ['kode_kategori', 'nama_kategori'];
+
+    public function kategori_ke_barang(){
+        return $this->hasMany("App\Barang", 'kode_kategori');
+    }
 }

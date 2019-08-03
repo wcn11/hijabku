@@ -2,12 +2,12 @@
 
 @section('content')
     <div class="container-fluid">
-        <div class="row">
+        <div class="row p-2">
 
             <button class="btn btn-dark" data-target=".modal-tambah" data-toggle="modal"><i class="fa fa-plus"></i> Tambah</button>
 
             <div class="table-responsive p-2">
-                <table class="table table-border table-hover">
+                <table class="table table-border table-hover tabel-kategori">
                     <thead>
                         <tr class="text-center">
                             <th>Kode Kategori</th>
@@ -100,6 +100,10 @@
 @section('js')
 
     <script>
+        $(document).ready(function(){
+            $(".tabel-kategori").DataTable();
+        });
+
         $(".btn-update").click(function(){
             var nama = $("[name='nama_kategori']").val();
 

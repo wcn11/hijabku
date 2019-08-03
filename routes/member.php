@@ -23,4 +23,6 @@ Route::group(['namespace' => 'Member'], function() {
     Route::get('email/verify','Auth\VerificationController@show')->name('member.verification.notice');
     Route::get('email/verify/{id}','Auth\VerificationController@verify')->name('member.verification.verify');
 
+    Route::post("keranjang/update", "HomeController@update_keranjang");
+
 });

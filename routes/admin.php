@@ -35,6 +35,9 @@ Route::group(['namespace' => 'Admin'], function() {
         Route::post("kategori/hapus/{kode_kategori}", 'KategoriController@hapus_kategori')->name('admin.hapus_kategori');
         Route::post("kategori/update", 'KategoriController@update_kategori')->name('admin.update_kategori');
 
+        Route::get("member", "MemberController@index")->name("admin.member");
+        Route::post("member/hapus/{id_member}", "MemberController@hapus_member")->name("admin.hapus_member");
+
     });
 
 });

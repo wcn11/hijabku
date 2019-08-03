@@ -1,58 +1,78 @@
 @extends('admin.layouts.app')
 
+@section('css')
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.4/cropper.min.css"> --}}
+    <style>
+        /* img {
+            max-width: 100%; /* This rule is very important, please do not ignore this! */
+        } */
+    </style>
+@endsection
+
 @section('content')
     
     <div class="container-fluid">
-        <div class="row">
+        <div class="row container">
 
             <div class="wrapper">
                 <button class="btn btn-dark " data-target=".modal-tambah" data-toggle="modal"><i class="fa fa-plus"></i> Tambah barang</button>
             </div>
 
-            <table class="table table-responsive table-hover table-borderless">
-                <thead>
-                    <tr class="text-center">
-                        <th>Kode Barang</th>
-                        <th>Kategori</th>
-                        <th>Nama Barang</th>
-                        <th>Stok</th>
-                        <th>Keterangan</th>
-                        <th>Gambar</th>
-                        <th>Harga Barang</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($barang as $b)
+
+        <div class="container">
+            <div class="table-responsive">
+                <table class="table table-hover table-borderless tabel-barang">
+                    <thead>
                         <tr class="text-center">
-                            <td>{{ $b->kode_barang }}</td>
-                            <td>engga ada</td>
-                            <td>{{ $b->nama_barang }}</td>
-                            <td>{{ $b->stok }}</td>
-                            <td>{{ $b->keterangan }}</td>
-                            <td>{{ $b->gambar }}</td>
-                            <td>{{ $b->harga_barang }}</td>
-                            <td>
-                                    <button class="btn btn-danger btn-hapus" data-nama={{ $b->nama_barang }} data-id="{{ $b->kode_barang }}"><i class="fa fa-trash"></i> hapus</button>
-                                    <button class="btn btn-warning btn-edit"
-                                        data-kode="{{ $b->kode_barang }}"
-                                        data-nama="{{ $b->nama_barang }}"
-                                        data-stok="{{ $b->stok }}"
-                                        data-harga="{{ $b->harga_barang }}"
-                                        data-keterangan="{{ $b->keterangan }}"
-                                        data-gambar="{{ $b->gambar }}">
-                                            <i class="fa fa-edit"></i> edit
-                                    </button>
-
-                                <form class="form-hapus-{{ $b->kode_barang }}" action="{{ route('admin.hapus_barang', $b->kode_barang) }}" method="POST">
-                                    @csrf
-                                </form>
-                            </td>
+                            <th>No</th>
+                            <th>Gambar</th>
+                            <th>Kode Barang</th>
+                            <th>Kategori</th>
+                            <th>Nama Barang</th>
+                            <th>Stok</th>
+                            <th>Keterangan</th>
+                            <th>Harga Barang</th>
+                            <th>Aksi</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($barang as $b_key => $b)
+                            <tr class="text-center">
+                                <td>{{ $b_key + 1 }}</td>
+                                <td>
+                                    <div class="gambar">
+                                        <img src="{{ url('/images/barang/'. $b->gambar) }}" class="img-fluid rounded">
+                                    </div>
+                                </td>
+                                <td>{{ $b->kode_barang }}</td>
+                                <td>{{ $b->kategori_ke_barang->nama_kategori }}</td>
+                                <td>{{ $b->nama_barang }}</td>
+                                <td>{{ $b->stok }}</td>
+                                <td>{{ $b->keterangan }}</td>
+                                <td>{{ $b->harga_barang }}</td>
+                                <td>
+                                        <button class="btn btn-danger btn-hapus" data-nama={{ $b->nama_barang }} data-id="{{ $b->kode_barang }}"><i class="fa fa-trash"></i> hapus</button>
+                                        <button class="btn btn-warning btn-edit"
+                                            data-kode="{{ $b->kode_barang }}"
+                                            data-kategori="{{ $b->kategori_ke_barang->kode_kategori }}"
+                                            data-nama="{{ $b->nama_barang }}"
+                                            data-stok="{{ $b->stok }}"
+                                            data-harga="{{ $b->harga_barang }}"
+                                            data-keterangan="{{ $b->keterangan }}"
+                                            data-gambar="{{ $b->gambar }}">
+                                                <i class="fa fa-edit"></i> edit
+                                        </button>
 
+                                    <form class="form-hapus-{{ $b->kode_barang }}" action="{{ route('admin.hapus_barang', $b->kode_barang) }}" method="POST">
+                                        @csrf
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -64,12 +84,15 @@
                 </div>
                 <div class="modal-body">
 
-                    <form action="{{ route('admin.tambah_barang') }}" method="POST" class="form form-tambah-barang">
+                    <form action="{{ route('admin.tambah_barang') }}" method="POST" class="form form-tambah-barang" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group">
                             <label for="gambar_barang">Gambar barang</label>
-                            <input type="text" class="form-control" name="gambar_barang">
+                            <div>
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpjftwMuBG-NAFOg9P2y2zkJRZhyvdlVy2k9YZJecaKp62W4SD" class="img-fluid rounded gambar-tambah-preview w-100">
+                            </div>
+                            <input type="file" accept="image/*" class="form-control gambar-tambah" name="gambar_barang">
                         </div>
 
                         <div class="form-group">
@@ -96,7 +119,7 @@
                             <label for="barang">Kategori</label>
                             <select name="kategori_barang" class="form-control">
                                 @foreach($kategori as $k)
-                                    <option value="{{ $k->kode_kategori }}">{{ $k->nama_kategori }}</option>
+                                    <option  value="{{ $k->kode_kategori }}">{{ $k->nama_kategori }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -105,6 +128,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-info btn-tambah"><i class="fa fa-plus"></i> Tambah</button>
+                    <button class="btn btn-dark" data-dismiss="modal"><i class="fas fa-close"></i> Tutup</button>
                 </div>
             </div>
         </div>
@@ -118,14 +142,17 @@
                 </div>
                 <div class="modal-body">
 
-                    <form action="{{ route('admin.update_barang') }}" method="POST" class="form form-update">
+                    <form action="{{ route('admin.update_barang') }}" method="POST" class="form form-update" enctype="multipart/form-data">
                         @csrf
 
                         <input type="hidden" name="kode_barang">
 
                         <div class="form-group">
                             <label for="gambar_barang">Gambar barang</label>
-                            <input type="text" class="form-control update_gambar_barang" name="gambar_barang">
+                            <div>
+                                <img src="" class="img-fluid rounded gambar-edit">
+                            </div>
+                            <input type="file" class="form-control update_gambar_barang" name="gambar_barang" readonly>
                         </div>
 
                         <div class="form-group">
@@ -152,7 +179,7 @@
                             <label for="barang">Kategori</label>
                             <select name="kategori_barang" class="form-control update_kategori_barang">
                                 @foreach($kategori as $k)
-                                    <option value="{{ $k->kode_kategori }}">{{ $k->nama_kategori }}</option>
+                                    <option class="kode_kategori_edit_{{ $k->kode_kategori }}" value="{{ $k->kode_kategori }}">{{ $k->nama_kategori }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -166,12 +193,46 @@
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('js')
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.4/cropper.min.js"></script> --}}
     <script>
         $(document).ready(function(){
+
+        $(".gambar-tambah").on("change", function(){
+            bacaURL(this);
+        });
+
+        function bacaURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                $('.gambar-tambah-preview').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("[name='gambar_barang']").on("change", function(){
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                $('.gambar-edit').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+            $(".tabel-barang").DataTable();
 
             $(".btn-tambah").click(function(){
                 var gambar_barang = $("[name='gambar_barang']").val();
@@ -223,13 +284,7 @@
                 var keterangan_barang = $(".update_harga_barang").val();
                 var harga_barang = $(".update_keterangan_barang").val();
 
-                if(gambar_barang == ''){
-                    Swal.fire(
-                        'Gagal',
-                        'Harap upload gambar!',
-                        'error'
-                    );
-                }else if( nama_barang == ""){
+                if( nama_barang == ""){
                     Swal.fire(
                         'Gagal',
                         'Nama barang tidak boleh kosong!',
@@ -261,6 +316,7 @@
         $(".btn-edit").click(function(){
 
             var kode = $(this).attr("data-kode");
+            var kategori = $(this).attr("data-kategori");
             var nama = $(this).attr("data-nama");
             var gambar = $(this).attr("data-gambar");
             var stok = $(this).attr("data-stok");
@@ -271,7 +327,9 @@
             $("[name='kode_barang']").val(kode);
 
             $(".update_nama_barang").val(nama);
-            $(".update_gambar_barang").val(gambar);
+            $(".kode_kategori_edit_" + kategori).attr("selected", "selected");
+            $(".gambar-edit").attr("src", "{{ url('images/barang') }}" + "/" + gambar);
+            // $(".update_gambar_barang").val(gambar);
             $(".update_stok_barang").val(stok);
             $(".update_harga_barang").val(harga);
             $(".update_keterangan_barang").val(keterangan);
