@@ -465,7 +465,7 @@ input[type=number]
                             @else
                                 @foreach(Session::get('keranjang') as $k_key => $k)
                                     <tr class="text-center item-keranjang-{{ $k->kode_keranjang }} item-keranjang-{{ $k->barang_ke_keranjang->kode_barang }}">
-                                        <th scope="row">{{ $k_key + 1 }}</th>
+                                        <th scope="row" class="counter-nomor-keranjang">{{ $k_key + 1 }}</th>
                                         <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
                                         <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
                                         <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>

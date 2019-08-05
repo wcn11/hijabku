@@ -67,11 +67,22 @@ class HomeController extends Controller
         $kode_barang = $request->kode_barang;
 
         if(empty($request->kode_keranjang)){
-            $keranjang = Keranjang::where("kode_barang", $kode_barang)->where("id_member", Auth::guard("member")->user()->id_member)->delete();
+            $keranjang1 = Keranjang::where("kode_barang", $kode_barang)->where("id_member", Auth::guard("member")->user()->id_member)->delete();
+            
         }else{
-            $keranjang = Keranjang::find($request->kode_keranjang);
-            $keranjang->delete();
+            $keranjang1 = Keranjang::find($request->kode_keranjang);
+            $keranjang1->delete();
         }
+        
+        $keranjang = Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get();
+
+        $kode_barang = []; //hanya untuk mengeluarkan relasi    
+        
+        foreach($keranjang as $k){  
+            $kode_barang[] = array($k->barang_ke_keranjang);
+        }
+
+        return response()->json($keranjang);
 
     }
 
@@ -114,7 +125,7 @@ class HomeController extends Controller
                 $kode_barang[] = array( $k->barang_ke_keranjang);
             }
 
-            return response()->json($kode_barang);
+            return response()->json($keranjang2);
 
         }else{
             return response()->json("belum_login");

@@ -459,10 +459,13 @@
     <script>
         $(document).ready(function(){
 
-            $(".btn-hapus-keranjang").click(function(){
+            $(document).on("click", ".btn-hapus-keranjang", function(){
                 var kode = $(this).attr("data-kode");
                 var item_keranjang = $(".item-keranjang-" + kode);
                 var barang = $(this).attr("data-barang");
+                var counter_nomor_keranjang = $(".counter-nomor-keranjang").text();
+                var total_keranjang = parseInt($(".total-keranjang").text()) - 1;
+                var keranjang = $(".angka-keranjang").text();
 
                 $.ajax({
                     type: "post",
@@ -475,11 +478,36 @@
                         item_keranjang.hide();
                         $(".btn-keluarkan-" + barang).hide();
                         $(".btn-tambah-keranjang-" + barang).show();
+                        $(".angka-keranjang").text(parseInt(keranjang) - 1);
+                        $(".keranjang-container").html("");
+
+                        for(var i = 0; i < hasil.length; i++){
+                            var counter = i + 1;
+                            $(".keranjang-container").append(
+                                "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "<td scope='row'>" + counter + "</td>" +
+                                    "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
+                                    "<td>" +
+                                        "<div class='quantity'>" +
+                                            "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                    "<td>" + hasil[i]['total'] + "</td>" +
+                                    "<td>" + 
+                                        "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                        "<button class='btn btn-success btn-bayar-keranjang' data-kode='{{ $k->kode_keranjang }}'> bayar</button>" +
+                                    "</td>" +
+                                "</tr>"
+                            );
+                        }
                     }
                 });
             });
             
-            $(".btn-keluarkan").click(function(){
+            $(document).on("click", ".btn-keluarkan" ,function(){
                 var kode = $(this).attr("data-kode");
                 var barang = $(this).attr("data-barang");
                 var keranjang = $(".angka-keranjang").text();
@@ -493,10 +521,35 @@
                         kode_barang: kode
                     },
                     success: function(hasil){
+                        // console.log(hasil[0]);
+                        $(".keranjang-container").html(""); // menghapus seluruh elemen yang ada pada tabel keranjang (didalam <tbody>)
                         $(".btn-tambah-keranjang-" + kode).show();
                         $(".btn-keluarkan-" + kode).hide();
                         $(".angka-keranjang").text(parseInt(keranjang) - 1);
                         $(".item-keranjang-" + barang).hide();
+                        
+                        for(var i = 0; i < hasil.length; i++){
+                            var counter = i + 1;
+                            $(".keranjang-container").append(
+                                "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "<td scope='row'>" + counter + "</td>" +
+                                    "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
+                                    "<td>" +
+                                        "<div class='quantity'>" +
+                                            "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
+                                        "</div>" +
+                                    "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                    "<td>" + hasil[i]['total'] + "</td>" +
+                                    "<td>" + 
+                                        "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                        "<button class='btn btn-success btn-bayar-keranjang' data-kode='{{ $k->kode_keranjang }}'> bayar</button>" +
+                                    "</td>" +
+                                "</tr>"
+                            );
+                        }
                     }
                 });
             });
@@ -511,14 +564,13 @@
                 },
                 success: function(hasil){
                     for(var i = 0; i < hasil.length; i++){
-                        // console.log(hasil[i][0]);
                         $(".btn-tambah-keranjang-" + hasil[i][0]).hide();
                         $(".btn-keluarkan-" + hasil[i][0]).show();
                     }
                 }
             });
 
-            $(".btn-tambah-keranjang").on("click", function(){
+            $(document).on("click", ".btn-tambah-keranjang", function(){
 
                 var kode = $(this).attr("data-kode");
                 var keranjang = $(".angka-keranjang").text();
@@ -535,12 +587,32 @@
                         if(hasil == "belum_login"){
                             $("#modal-login").modal("show");
                         }else{
+                            $(".keranjang-container").html("");
                             $(".btn-tambah-keranjang-" + kode).hide();
                             $(".btn-keluarkan-" + kode).show();
                             $(".angka-keranjang").text(parseInt(keranjang) + 1);
                             for(var i = 0; i < hasil.length; i++){
-                                console.log(hasil[i][0]['kode_barang']);
-                            
+                                // console.log(hasil[i]['barang_ke_keranjang']);
+                                var counter = i + 1;
+                                $(".keranjang-container").append(
+                                    "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                        "<td scope='row'>" + counter + "</td>" +
+                                        "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
+                                        "<td>" +
+                                            "<div class='quantity'>" +
+                                                "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
+                                            "</div>" +
+                                        "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                        "<td>" + hasil[i]['total'] + "</td>" +
+                                        "<td>" + 
+                                            "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                            "<button class='btn btn-success btn-bayar-keranjang' data-kode='{{ $k->kode_keranjang }}'> bayar</button>" +
+                                        "</td>" +
+                                    "</tr>"
+                                );
                             }
                         }
                     }
