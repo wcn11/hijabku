@@ -24,5 +24,8 @@ Route::group(['namespace' => 'Member'], function() {
     Route::get('email/verify/{id}','Auth\VerificationController@verify')->name('member.verification.verify');
 
     Route::post("keranjang/update", "HomeController@update_keranjang");
-
+    Route::post("keranjang/ambildata", "HomeController@ambildata");
+    Route::post("keranjang/keluarkan", "HomeController@keluarkan");
+    Route::post('/tambah_keranjang/{kode_barang}', "HomeController@tambah_keranjang");
+    Route::get('/detail_barang/{kode_barang}', "HomeController@detail_barang")->name('detail_barang');
 });

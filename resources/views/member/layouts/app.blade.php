@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="Colo Shop Template">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('bootstrap/dist/css/bootstrap.min.css') }}">
     
     <link href="{{ asset('plugins/font-awesome-4.7.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.css') }}">
@@ -180,7 +180,7 @@ input[type=number]
                                     <li class="checkout">
                                         <a href="javascript:void(0)" data-target=".modal-keranjang" data-toggle="modal">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" class="checkout_items">{{ Session::get("keranjang")->count() }}</span>
+                                            <span id="checkout_items" data-angka-keranjang="{{ Session::get("keranjang")->count() }}" class="checkout_items angka-keranjang">{{ Session::get("keranjang")->count() }}</span>
                                         </a>
                                     </li>
                                 @endif
@@ -439,6 +439,7 @@ input[type=number]
             <div class="modal-header justify-content-center">
                 <div class="">
                     <i class="fa fa-cart-plus"></i> Keranjang anda
+                    {{-- <button type="button" data-dismiss="modal" class="close">&times;</button> --}}
                 </div>
             </div>
             <div class="modal-body">
@@ -455,26 +456,34 @@ input[type=number]
                         <th scope="col">Aksi</th>
                       </tr>
                     </thead>
-                    <tbody>
-                        @foreach(Session::get('keranjang') as $k_key => $k)
-                            <tr class="text-center">
-                                <th scope="row">{{ $k_key + 1 }}</th>
-                                <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
-                                <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
-                                <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
-                                <td>
-                                    <div class="quantity">
-                                        <input type="number" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang">
-                                    </div>
-                                </td>
-                                <td>{{ $k->barang_ke_keranjang->stok }}</td>
-                                <td class="total-keranjang">{{ $k->total }}</td>
-                                <td>
-                                    <button class="btn btn-danger btn-hapus-keranjang" data-kode="{{ $k->kode_keranjang }}"> hapus</button>
-                                    <button class="btn btn-success btn-bayar-keranjang" data-kode="{{ $k->kode_keranjang }}"> bayar</button>
-                                </td>
-                            </tr>
-                      @endforeach
+                    <tbody class="keranjang-container">
+                        @if(Session::has("keranjang"))
+                            @if(Session::get("keranjang")->isEmpty())
+                                <tr class="text-center">
+                                    <td colspan="8">Belum ada barang</td>
+                                </tr>
+                            @else
+                                @foreach(Session::get('keranjang') as $k_key => $k)
+                                    <tr class="text-center item-keranjang-{{ $k->kode_keranjang }} item-keranjang-{{ $k->barang_ke_keranjang->kode_barang }}">
+                                        <th scope="row">{{ $k_key + 1 }}</th>
+                                        <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
+                                        <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
+                                        <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
+                                        <td>
+                                            <div class="quantity">
+                                                <input type="number" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang">
+                                            </div>
+                                        </td>
+                                        <td>{{ $k->barang_ke_keranjang->stok }}</td>
+                                        <td class="total-keranjang">{{ $k->total }}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-hapus-keranjang" data-kode="{{ $k->kode_keranjang }}" data-barang="{{ $k->barang_ke_keranjang->kode_barang }}"> hapus</button>
+                                            <button class="btn btn-success btn-bayar-keranjang" data-kode="{{ $k->kode_keranjang }}"> bayar</button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        @endif
                     </tbody>
                   </table>
             </div>
@@ -486,8 +495,8 @@ input[type=number]
       </div>
     
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> --}}
+    <script src="{{ asset('bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('plugins/Isotope/isotope.pkgd.min.js') }}"></script>
     <script src="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.js') }}"></script>
     <script src="{{ asset('plugins/easing/easing.js') }}"></script>

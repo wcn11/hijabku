@@ -102,8 +102,8 @@
                                             <div class="product_price"><sup>Rp</sup>{{ $b->harga_barang }}</div>
                                         </div>
                                     </div>
-                                    <div class="red_button add_to_cart_button btn-tambah-keranjang btn-tambah-keranjang-{{ $b->kode_barang }}" data-kode="{{ $b->kode_barang }}"><a href="javascript:void(0)"><i class="fa fa-cart-plus"></i> masukkan keranjang</a></div>
-                                    <button class="btn btn-dark w-100 btn-keluarkan btn-keluarkan-{{ $b->kode_barang }}"><i class="fa fa-cart-arrow-down"></i> keluarkan dari keranjang</button>
+                                    <div class="red_button add_to_cart_button btn-tambah-keranjang btn-tambah-keranjang-{{ $b->kode_barang }}" data-barang="{{ $b->kode_barang }}" data-kode="{{ $b->kode_barang }}"><a href="javascript:void(0)"><i class="fa fa-cart-plus"></i> masukkan keranjang</a></div>
+                                    <button class="btn btn-dark w-100 btn-keluarkan btn-keluarkan-{{ $b->kode_barang }}" data-barang="{{ $b->kode_barang }}" data-kode="{{ $b->kode_barang }}"><i class="fa fa-cart-arrow-down"></i> keluarkan dari keranjang</button>
                                 </div>
                             @endforeach
 
@@ -450,6 +450,8 @@
             </div>
         </div>
 
+        <p data-haha="qwe">hahahahahah</p>
+        {{-- <input type="" --}}
 @endsection
 
 @section('js')
@@ -457,23 +459,89 @@
     <script>
         $(document).ready(function(){
 
-            $(".btn-tambah-keranjang").on("click", function(){
-
+            $(".btn-hapus-keranjang").click(function(){
                 var kode = $(this).attr("data-kode");
+                var item_keranjang = $(".item-keranjang-" + kode);
+                var barang = $(this).attr("data-barang");
 
                 $.ajax({
                     type: "post",
-                    url: "{{ url('tambah_keranjang') }}" + "/" + kode,
+                    url: "{{ url('member/keranjang/keluarkan') }}",
+                    data:{
+                        "_token" : $("[name='_token']").val(),
+                        kode_keranjang: kode
+                    },
+                    success: function(hasil){
+                        item_keranjang.hide();
+                        $(".btn-keluarkan-" + barang).hide();
+                        $(".btn-tambah-keranjang-" + barang).show();
+                    }
+                });
+            });
+            
+            $(".btn-keluarkan").click(function(){
+                var kode = $(this).attr("data-kode");
+                var barang = $(this).attr("data-barang");
+                var keranjang = $(".angka-keranjang").text();
+                var item_keranjang = $(".item-keranjang-" + kode);
+
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/keranjang/keluarkan') }}",
+                    data:{
+                        "_token" : $("[name='_token']").val(),
+                        kode_barang: kode
+                    },
+                    success: function(hasil){
+                        $(".btn-tambah-keranjang-" + kode).show();
+                        $(".btn-keluarkan-" + kode).hide();
+                        $(".angka-keranjang").text(parseInt(keranjang) - 1);
+                        $(".item-keranjang-" + barang).hide();
+                    }
+                });
+            });
+
+            // ambil data
+
+            $.ajax({
+                type: "post", 
+                url: "{{ url('member/keranjang/ambildata') }}",
+                data: {
+                    "_token": $("[name='_token']").val()
+                },
+                success: function(hasil){
+                    for(var i = 0; i < hasil.length; i++){
+                        // console.log(hasil[i][0]);
+                        $(".btn-tambah-keranjang-" + hasil[i][0]).hide();
+                        $(".btn-keluarkan-" + hasil[i][0]).show();
+                    }
+                }
+            });
+
+            $(".btn-tambah-keranjang").on("click", function(){
+
+                var kode = $(this).attr("data-kode");
+                var keranjang = $(".angka-keranjang").text();
+
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/tambah_keranjang') }}" + "/" + kode,
                     data: {
                         "_token": $("[name='_token']").val(),
                         kode_barang: kode
                     },
                     success: function(hasil){
+
                         if(hasil == "belum_login"){
                             $("#modal-login").modal("show");
-                        }else if(hasil == "berhasil"){
+                        }else{
                             $(".btn-tambah-keranjang-" + kode).hide();
                             $(".btn-keluarkan-" + kode).show();
+                            $(".angka-keranjang").text(parseInt(keranjang) + 1);
+                            for(var i = 0; i < hasil.length; i++){
+                                console.log(hasil[i][0]['kode_barang']);
+                            
+                            }
                         }
                     }
                 });
