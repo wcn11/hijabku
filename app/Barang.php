@@ -24,4 +24,8 @@ class Barang extends Model
     public function barang_ke_keranjang(){
         return $this->hasMany("App\Keranjang", 'kode_barang');
     }
+
+    public function ib_ke_barang(){
+        return $this->hasMany("App\Invoice_barang", "kode_barang");
+    }
 }

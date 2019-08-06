@@ -178,7 +178,7 @@ input[type=number]
 
                                 @if(Auth::guard("member")->check())    
                                     <li class="checkout">
-                                        <a href="javascript:void(0)" data-target=".modal-keranjang" data-toggle="modal">
+                                        <a href="javascript:void(0)" data-target=".modal-keranjang" class="trigger-keranjang" data-toggle="modal">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                             <span id="checkout_items" data-angka-keranjang="{{ Session::get("keranjang")->count() }}" class="checkout_items angka-keranjang">{{ Session::get("keranjang")->count() }}</span>
                                         </a>
@@ -445,16 +445,17 @@ input[type=number]
             <div class="modal-body">
                 <table class="table table-border">
                     <thead>
-                      <tr class="text-center">
-                        <th scope="col">No</th>
-                        <th scope="col">Foto</th>
-                        <th scope="col">Nama Barang</th>
-                        <th scope="col">Harga</th>
-                        <th scope="col">Jumlah</th>
-                        <th scope="col">Stok</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Aksi</th>
-                      </tr>
+                        <tr class="text-center">
+                            <th><input type="checkbox" class="kepala-checkbox"></th>
+                            <th scope="col">No</th>
+                            <th scope="col">Foto</th>
+                            <th scope="col">Nama Barang</th>
+                            <th scope="col">Harga</th>
+                            <th scope="col">Jumlah</th>
+                            <th scope="col">Stok</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
                     </thead>
                     <tbody class="keranjang-container">
                         @if(Session::has("keranjang"))
@@ -465,14 +466,14 @@ input[type=number]
                             @else
                                 @foreach(Session::get('keranjang') as $k_key => $k)
                                     <tr class="text-center item-keranjang-{{ $k->kode_keranjang }} item-keranjang-{{ $k->barang_ke_keranjang->kode_barang }}">
+                                        <td><input type="checkbox" class="anak-checkbox" data-barang="{{ $k->barang_ke_keranjang->kode_barang }}" data-kode="{{ $k->kode_keranjang }}"></td>
                                         <th scope="row" class="counter-nomor-keranjang">{{ $k_key + 1 }}</th>
                                         <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
                                         <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
                                         <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
                                         <td>
-                                            <div class="quantity">
-                                                <input type="number" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang">
-                                            </div>
+                                            <div type="text" class="container-jumlah-{{ $k->kode_keranjang }}" readonly> {{ $k->jumlah }} </div>
+                                            <input type="range" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang counter-keranjang-{{ $k->kode_keranjang }}">
                                         </td>
                                         <td>{{ $k->barang_ke_keranjang->stok }}</td>
                                         <td class="total-keranjang">{{ $k->total }}</td>
@@ -488,7 +489,7 @@ input[type=number]
                   </table>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-dark"> Bayar Semua</button>
+                <button class="btn btn-dark btn-bayar-semua"> Bayar Terpilih</button>
             </div>
           </div>
         </div>
@@ -505,9 +506,89 @@ input[type=number]
     <script>
         $(document).ready(function(){
 
-            
+            $(".kepala-checkbox").click(function(){
+                $(".anak-checkbox").each(function(){
+                    $(this).trigger("click");
+                });
+            });
 
-        $(".counter-keranjang").on("change" ,function(e) {
+        $(".btn-bayar-semua").click(function(){
+
+            // $(".anak-checkbox").each(function(){
+            //     $(this).trigger("click");
+            // });
+
+            var kode_invoice = "";
+            
+            $.ajax({  //masukkan kode invoice d dahulu
+                    type: "post",
+                    url: "{{ url('member/invoice') }}",
+                    data:{
+                        "_token": $("[name='_token']").val(),
+                    },
+                    success: function(hasil){
+                        
+                        $(".anak-checkbox:checked").each(function(){
+
+                            $.ajax({  //lalu masukkan kode barang ke tabel invoice_barang
+                                type: "post",
+                                url: "{{ url('member/invoice/tambah_barang') }}",
+                                data:{
+                                    "_token": $("[name='_token']").val(),
+                                    "kode_keranjang": $(this).attr("data-kode"),
+                                    "kode_invoice": hasil
+                                },
+                                success: function(hasil2){
+                                },
+                            });
+
+                        });
+
+
+                        Swal.fire({
+                            title: 'Invoice Berhasil Dibuat!',
+                            type: "success",
+                            confirmButtonText: "invoice",
+                            animation: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            customClass: {
+                                popup: 'animated tada'
+                            }
+                        }).then((result) => {
+                            if(result.value){
+                                window.location.href = "{{ url('member/invoice/bayar/') }}" + "/" + hasil;
+                            }
+                        });
+
+                    }
+
+                });
+
+        });
+
+        function masukkan_data(hasil){
+
+            $(".anak-checkbox:checked").each(function(){
+
+                $.ajax({  //lalu masukkan kode barang ke tabel invoice_barang
+                    type: "post",
+                    url: "{{ url('member/invoice/tambah_barang') }}",
+                    data:{
+                        "_token": $("[name='_token']").val(),
+                        "kode_keranjang": $(this).attr("data-kode"),
+                        "kode_invoice": hasil
+                    },
+                    success: function(hasil2){
+                    },
+                });
+
+            });
+
+        }
+
+        $(document).on("change", ".counter-keranjang" ,function(e) {
             var jumlah = $(this).attr("data-jumlah");
             var max = $(this).attr("max");
             var kode_keranjang = $(this).attr("data-kode");
@@ -526,6 +607,7 @@ input[type=number]
                 },
                 success: function(hasil){
                     $(".total-keranjang").text(value * harga);
+                    $(".container-jumlah-" + kode_keranjang).text($(".counter-keranjang-" + kode_keranjang).val());
                 }
             });
 
@@ -691,39 +773,6 @@ input[type=number]
             });
 
         });
-
-        jQuery('<div class="quantity-nav"><div class="quantity-button quantity-up">+</div><div class="quantity-button quantity-down">-</div></div>').insertAfter('.quantity input');
-    jQuery('.quantity').each(function() {
-      var spinner = jQuery(this),
-        input = spinner.find('input[type="number"]'),
-        btnUp = spinner.find('.quantity-up'),
-        btnDown = spinner.find('.quantity-down'),
-        min = input.attr('min'),
-        max = input.attr('max');
-
-      btnUp.click(function() {
-        var oldValue = parseFloat(input.val());
-        if (oldValue >= max) {
-          var newVal = oldValue;
-        } else {
-          var newVal = oldValue + 1;
-        }
-        spinner.find("input").val(newVal);
-        spinner.find("input").trigger("change");
-      });
-
-      btnDown.click(function() {
-        var oldValue = parseFloat(input.val());
-        if (oldValue <= min) {
-          var newVal = oldValue;
-        } else {
-          var newVal = oldValue - 1;
-        }
-        spinner.find("input").val(newVal);
-        spinner.find("input").trigger("change");
-      });
-
-    });
     </script>
     </body>
     

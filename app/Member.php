@@ -22,7 +22,7 @@ class Member extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'id_member', 'nama', 'email', 'password',
+        'id_member', 'nama', 'email', 'password', 'telepon'
     ];
 
     /**
@@ -62,6 +62,10 @@ class Member extends Authenticatable
     public function sendEmailVerificationNotification()
     {
         $this->notify(new MemberVerifyEmail);
+    }
+    
+    public function member_ke_invoice(){
+        return $this->hasMany("App\Invoice", "id_member");
     }
 
 }

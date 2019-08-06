@@ -28,4 +28,9 @@ Route::group(['namespace' => 'Member'], function() {
     Route::post("keranjang/keluarkan", "HomeController@keluarkan");
     Route::post('/tambah_keranjang/{kode_barang}', "HomeController@tambah_keranjang");
     Route::get('/detail_barang/{kode_barang}', "HomeController@detail_barang")->name('detail_barang');
+
+    Route::post("invoice", "HomeController@invoice");
+    Route::post("invoice/tambah_barang", "HomeController@tambah_barang");
+    Route::get("invoice/bayar/{kode_invoice}", "HomeController@bayar");
+    Route::post("invoice/konfirmasi/{kode_invoice}", "HomeController@konfirmasi")->name("member.konfirmasi_invoice");
 });

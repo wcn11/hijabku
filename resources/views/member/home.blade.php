@@ -485,14 +485,14 @@
                             var counter = i + 1;
                             $(".keranjang-container").append(
                                 "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] +  "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
                                     "<td scope='row'>" + counter + "</td>" +
                                     "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
                                     "<td>" +
-                                        "<div class='quantity'>" +
-                                            "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
-                                        "</div>" +
+                                        "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly>" + hasil[i]['jumlah'] + "</div>" +
+                                        "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
                                     "</td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
                                     "<td>" + hasil[i]['total'] + "</td>" +
@@ -532,14 +532,14 @@
                             var counter = i + 1;
                             $(".keranjang-container").append(
                                 "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] +  "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
                                     "<td scope='row'>" + counter + "</td>" +
                                     "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
                                     "<td>" +
-                                        "<div class='quantity'>" +
-                                            "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
-                                        "</div>" +
+                                        "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly>" + hasil[i]['jumlah'] + "</div>" +
+                                        "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
                                     "</td>" +
                                     "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
                                     "<td>" + hasil[i]['total'] + "</td>" +
@@ -596,14 +596,14 @@
                                 var counter = i + 1;
                                 $(".keranjang-container").append(
                                     "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                        "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] +  "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
                                         "<td scope='row'>" + counter + "</td>" +
                                         "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
                                         "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
                                         "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
                                         "<td>" +
-                                            "<div class='quantity'>" +
-                                                "<input type='number' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang'>" +
-                                            "</div>" +
+                                            "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly>" + hasil[i]['jumlah'] + "</div>" +
+                                            "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
                                         "</td>" +
                                         "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
                                         "<td>" + hasil[i]['total'] + "</td>" +

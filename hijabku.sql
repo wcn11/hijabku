@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2019 at 10:25 PM
+-- Generation Time: Aug 06, 2019 at 07:33 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -39,7 +39,27 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`username`, `password`, `remember_token`) VALUES
-('durika', '$2y$10$0AG5sdHL1v6XzXkiIhCfeOqfG00e25hBaY80EjyMK9rMs4Ld5akGS', NULL);
+('durika', '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bank`
+--
+
+CREATE TABLE `bank` (
+  `kode_bank` varchar(20) NOT NULL,
+  `nomor_rekening` varchar(50) NOT NULL,
+  `bank` varchar(50) NOT NULL,
+  `atas_nama` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `bank`
+--
+
+INSERT INTO `bank` (`kode_bank`, `nomor_rekening`, `bank`, `atas_nama`) VALUES
+('1', '0953831098', 'BCA', 'Durika');
 
 -- --------------------------------------------------------
 
@@ -48,8 +68,8 @@ INSERT INTO `admins` (`username`, `password`, `remember_token`) VALUES
 --
 
 CREATE TABLE `barang` (
-  `kode_barang` varchar(25) NOT NULL,
-  `kode_kategori` varchar(25) NOT NULL,
+  `kode_barang` varchar(30) NOT NULL,
+  `kode_kategori` varchar(30) NOT NULL,
   `nama_barang` varchar(30) NOT NULL,
   `stok` int(3) NOT NULL,
   `keterangan` text NOT NULL,
@@ -64,11 +84,55 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`kode_barang`, `kode_kategori`, `nama_barang`, `stok`, `keterangan`, `gambar`, `harga_barang`, `dibuat`, `diupdate`) VALUES
-('BRG-1-1', 'KTG-2', 'Ciput Brokat', 12, 'Secara etimologis jilbab berasal dari bahasa arab jalaba yang berarti menghimpun atau membawa.[1] Istilah jilbab digunakan pada negeri-negeri berpenduduk muslim lain sebagai jenis pakaian dengan penamaan berbeda-beda.[1] Di Iran disebut chador, di India dan Pakistan disebut pardeh, di Libya milayat, di Irak abaya, di Turki charshaf, dan tudung di Malaysia, sementara di negara Arab-Afrika disebut hijab.[1]', '1564760205-ciput brokat.jpg', 12000, '2019-08-02 16:14:32', '2019-08-02 09:14:32'),
-('BRG-1-2', 'KTG-2', 'Ciput Ninja', 21, 'Ini adalah Ciput', '1564760253-ciput ninja.jpg', 12000, '2019-08-02 15:37:33', '2019-08-02 08:37:33'),
-('BRG-1-4', 'KTG-1', 'Hijab Pashmina', 12, 'Ini adalah Hijab', '1564760387-hijab.jpg', 50000, '2019-08-02 08:39:47', '2019-08-02 08:39:47'),
-('BRG-2-3', 'KTG-2', 'Ciput Rajut', 10, 'Ini adalah Ciput', '1564760318-ciput rajut.jpg', 5000, '2019-08-02 08:38:38', '2019-08-02 08:38:38'),
-('BRG-3-4', 'KTG-3', 'Celana', 12, 'Ini celana dalam', '1564840980-12412_Kids-party-Happy-Birthday-little-princes.jpg', 2000000, '2019-08-03 07:03:00', '2019-08-03 07:03:00');
+('BRG-1-1', 'KTG-1', 'Ciput 1', 12, 'engga tau', '1565082149-student.jpg', 10000, '2019-08-06 09:02:29', '2019-08-06 02:02:29'),
+('BRG-1-2', 'KTG-2', 'ciput 2', 13, 'engga ada', '1565082072-ciput rajut.jpg', 12000, '2019-08-06 09:01:24', '2019-08-06 02:01:24'),
+('BRG-3-3', 'KTG-3', 'ciput 3', 12, 'weaef', '1565082109-ciput brokat.jpg', 20000, '2019-08-06 02:01:49', '2019-08-06 02:01:49');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoice`
+--
+
+CREATE TABLE `invoice` (
+  `kode_invoice` varchar(30) NOT NULL,
+  `alamat_pengiriman` varchar(255) DEFAULT NULL,
+  `id_member` varchar(30) NOT NULL,
+  `jatuh_tempo` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `tanggal_invoice` date DEFAULT NULL,
+  `atas_nama` varchar(50) DEFAULT NULL,
+  `alamat_penerima` varchar(100) DEFAULT NULL,
+  `telepon` varchar(15) DEFAULT NULL,
+  `status` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `invoice`
+--
+
+INSERT INTO `invoice` (`kode_invoice`, `alamat_pengiriman`, `id_member`, `jatuh_tempo`, `tanggal_invoice`, `atas_nama`, `alamat_penerima`, `telepon`, `status`) VALUES
+('INV-4-1', 'MBR-1', 'MBR-1', '2019-08-06 16:51:30', '2019-08-06', 'durika', 'Jalan jalan', '0812123we', 'menunggu');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `invoice_barang`
+--
+
+CREATE TABLE `invoice_barang` (
+  `kode_invoice_barang` varchar(30) NOT NULL,
+  `kode_invoice` varchar(30) NOT NULL,
+  `kode_barang` varchar(30) NOT NULL,
+  `jumlah` int(3) NOT NULL,
+  `total` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `invoice_barang`
+--
+
+INSERT INTO `invoice_barang` (`kode_invoice_barang`, `kode_invoice`, `kode_barang`, `jumlah`, `total`) VALUES
+('IB-2-1', 'INV-4-1', 'BRG-1-1', 1, 10000);
 
 -- --------------------------------------------------------
 
@@ -77,7 +141,7 @@ INSERT INTO `barang` (`kode_barang`, `kode_kategori`, `nama_barang`, `stok`, `ke
 --
 
 CREATE TABLE `kategori` (
-  `kode_kategori` varchar(25) NOT NULL,
+  `kode_kategori` varchar(30) NOT NULL,
   `nama_kategori` varchar(30) NOT NULL,
   `gambar` varchar(255) NOT NULL DEFAULT 'https://cdn.shopify.com/s/files/1/0065/3829/7396/products/pins_640x.jpg?v=1558137862'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -102,16 +166,16 @@ CREATE TABLE `keranjang` (
   `kode_barang` varchar(25) NOT NULL,
   `jumlah` int(3) NOT NULL DEFAULT '1',
   `id_member` varchar(25) NOT NULL,
-  `total` int(50) DEFAULT NULL
+  `total` int(50) DEFAULT NULL,
+  `tanggal_masuk` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `keranjang`
 --
 
-INSERT INTO `keranjang` (`kode_keranjang`, `kode_barang`, `jumlah`, `id_member`, `total`) VALUES
-('KRJG-2-1-2', 'BRG-1-1', 5, 'MBR-3', 60000),
-('KRJG-2-2-1', 'BRG-1-2', 1, 'MBR-2', 12000);
+INSERT INTO `keranjang` (`kode_keranjang`, `kode_barang`, `jumlah`, `id_member`, `total`, `tanggal_masuk`) VALUES
+('KRJG-2-2-4', 'BRG-1-2', 1, 'MBR-1', 12000, '2019-08-06 12:19:42');
 
 -- --------------------------------------------------------
 
@@ -140,6 +204,8 @@ CREATE TABLE `members` (
   `id_member` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nama` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `alamat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `telepon` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -151,9 +217,9 @@ CREATE TABLE `members` (
 -- Dumping data for table `members`
 --
 
-INSERT INTO `members` (`id_member`, `nama`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-('MBR-1', 'durika', 'durika@gmail.com', NULL, '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL, '2019-08-02 10:37:01', '2019-08-02 10:37:01'),
-('MBR-3', 'durika', 'durika1@gmail.com', NULL, '$2y$10$aHYjHdpTXsqi3kzY61BUfO4yjPf4jKiU19bSLXqzhFrBVJaSQNZvy', NULL, '2019-08-03 07:00:23', '2019-08-03 07:00:23');
+INSERT INTO `members` (`id_member`, `nama`, `email`, `alamat`, `telepon`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+('MBR-1', 'durika', 'durika@gmail.com', NULL, '', NULL, '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL, '2019-08-02 10:37:01', '2019-08-02 10:37:01'),
+('MBR-3', 'durika', 'durika1@gmail.com', 'alamat2', '', NULL, '$2y$10$aHYjHdpTXsqi3kzY61BUfO4yjPf4jKiU19bSLXqzhFrBVJaSQNZvy', NULL, '2019-08-03 07:00:23', '2019-08-03 07:00:23');
 
 -- --------------------------------------------------------
 
@@ -193,11 +259,35 @@ CREATE TABLE `password_resets` (
 --
 
 --
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`username`);
+
+--
+-- Indexes for table `bank`
+--
+ALTER TABLE `bank`
+  ADD PRIMARY KEY (`kode_bank`) USING BTREE;
+
+--
 -- Indexes for table `barang`
 --
 ALTER TABLE `barang`
   ADD PRIMARY KEY (`kode_barang`),
   ADD KEY `kd_kategori` (`kode_kategori`);
+
+--
+-- Indexes for table `invoice`
+--
+ALTER TABLE `invoice`
+  ADD PRIMARY KEY (`kode_invoice`);
+
+--
+-- Indexes for table `invoice_barang`
+--
+ALTER TABLE `invoice_barang`
+  ADD PRIMARY KEY (`kode_invoice_barang`);
 
 --
 -- Indexes for table `kategori`
