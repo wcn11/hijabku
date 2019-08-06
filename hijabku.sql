@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 06, 2019 at 07:33 PM
+-- Generation Time: Aug 07, 2019 at 12:02 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -91,17 +91,38 @@ INSERT INTO `barang` (`kode_barang`, `kode_kategori`, `nama_barang`, `stok`, `ke
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bukti`
+--
+
+CREATE TABLE `bukti` (
+  `kode_bukti` varchar(30) NOT NULL,
+  `id_member` varchar(30) NOT NULL,
+  `kode_invoice` varchar(30) NOT NULL,
+  `bukti` varchar(255) NOT NULL,
+  `tanggal_upload` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `status` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `bukti`
+--
+
+INSERT INTO `bukti` (`kode_bukti`, `id_member`, `kode_invoice`, `bukti`, `tanggal_upload`, `status`) VALUES
+('BKT-4-2-1', 'MBR-3', 'INV-4-1', '1565123795-sample 1.jpg', '2019-08-06 13:36:35', 'mengunggu konfirmasi');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `invoice`
 --
 
 CREATE TABLE `invoice` (
   `kode_invoice` varchar(30) NOT NULL,
-  `alamat_pengiriman` varchar(255) DEFAULT NULL,
   `id_member` varchar(30) NOT NULL,
-  `jatuh_tempo` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `tanggal_invoice` date DEFAULT NULL,
   `atas_nama` varchar(50) DEFAULT NULL,
   `alamat_penerima` varchar(100) DEFAULT NULL,
+  `tanggal_invoice` timestamp NULL DEFAULT NULL,
+  `jatuh_tempo` timestamp NULL DEFAULT NULL,
   `telepon` varchar(15) DEFAULT NULL,
   `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -110,8 +131,8 @@ CREATE TABLE `invoice` (
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`kode_invoice`, `alamat_pengiriman`, `id_member`, `jatuh_tempo`, `tanggal_invoice`, `atas_nama`, `alamat_penerima`, `telepon`, `status`) VALUES
-('INV-4-1', 'MBR-1', 'MBR-1', '2019-08-06 16:51:30', '2019-08-06', 'durika', 'Jalan jalan', '0812123we', 'menunggu');
+INSERT INTO `invoice` (`kode_invoice`, `id_member`, `atas_nama`, `alamat_penerima`, `tanggal_invoice`, `jatuh_tempo`, `telepon`, `status`) VALUES
+('INV-4-1', 'MBR-1', 'durika', 'jalan', '2019-08-06 18:38:10', '2019-08-13 18:38:10', '000012', 'mengunggu konfirmasi');
 
 -- --------------------------------------------------------
 
@@ -276,6 +297,12 @@ ALTER TABLE `bank`
 ALTER TABLE `barang`
   ADD PRIMARY KEY (`kode_barang`),
   ADD KEY `kd_kategori` (`kode_kategori`);
+
+--
+-- Indexes for table `bukti`
+--
+ALTER TABLE `bukti`
+  ADD PRIMARY KEY (`kode_bukti`);
 
 --
 -- Indexes for table `invoice`
