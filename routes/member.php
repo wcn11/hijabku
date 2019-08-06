@@ -33,4 +33,9 @@ Route::group(['namespace' => 'Member'], function() {
     Route::post("invoice/tambah_barang", "HomeController@tambah_barang");
     Route::get("invoice/bayar/{kode_invoice}", "HomeController@bayar");
     Route::post("invoice/konfirmasi/{kode_invoice}", "HomeController@konfirmasi")->name("member.konfirmasi_invoice");
+    Route::get("invoice/lihat/{kode_invoice}", "HomeController@lihat_invoice")->name("member.lihat_invoice");
+    Route::get("invoice/print/{kode_invoice}", "HomeController@print_invoice")->name("member.print_invoice");
+
+    Route::get("konfirmasi/pembayaran", "HomeController@konfirmasi_pembayaran")->name("member.konfirmasi_pembayaran");
+    Route::post("konfirmasi/upload", "HomeController@upload_bukti")->name("member.upload_bukti");
 });

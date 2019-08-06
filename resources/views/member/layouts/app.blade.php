@@ -11,7 +11,7 @@
     <link href="{{ asset('plugins/font-awesome-4.7.0/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/owl.theme.default.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/animate.css') }}">
+    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('plugins/OwlCarousel2-2.2.1/animate.css') }}"> --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('fontawesome/css/fontawesome.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('animate.css') }}">
     </head>
@@ -190,11 +190,13 @@ input[type=number]
                                             <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
                                         @else
                                             {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
-                                            <div class="btn-group dropleft">
+                                            <div class="btn-group dropdown">
                                                 <a href="javascript:void(0)" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-user"></i>
+                                                    {{ Auth::guard("member")->user()->nama }}
                                                 </a>
                                                 <div class="dropdown-menu">
+                                                    <button type="button" class="btn btn-block btn-invoice"><i class="fa fa-sign-out-alt"></i> invoice</button>
+                                                    <button type="button" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> profil</button>
                                                     <form action="{{ route('member.logout') }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
@@ -468,7 +470,7 @@ input[type=number]
                                     <tr class="text-center item-keranjang-{{ $k->kode_keranjang }} item-keranjang-{{ $k->barang_ke_keranjang->kode_barang }}">
                                         <td><input type="checkbox" class="anak-checkbox" data-barang="{{ $k->barang_ke_keranjang->kode_barang }}" data-kode="{{ $k->kode_keranjang }}"></td>
                                         <th scope="row" class="counter-nomor-keranjang">{{ $k_key + 1 }}</th>
-                                        <td><img src="{{ 'images/barang/'.$k->barang_ke_keranjang->gambar }}" class="img-fluid"></td>
+                                        <td><img src="{{ url('images/barang/'.$k->barang_ke_keranjang->gambar) }}" class="img-fluid"></td>
                                         <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
                                         <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
                                         <td>
@@ -494,6 +496,67 @@ input[type=number]
           </div>
         </div>
       </div>
+
+      <div class="modal fade modal-invoice" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    Daftar Invoice
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        
+                        <table class="table ">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th>Invoice</th>
+                                    <th>A/n</th>
+                                    <th>Alamat</th>
+                                    <th>telepon</th>
+                                    <th>Tanggal invoice</th>
+                                    <th>Jatuh tempo</th>
+                                    <th>status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Session::has('invoice'))
+
+                                    @if(Session::get("invoice")->count() > 0)
+                                        @foreach(Session::get("invoice") as $key => $i)
+                                            <tr>
+                                                <th scope="row">{{  $key + 1 }}</th>
+                                                <td>{{ $i->kode_invoice }}</td>
+                                                <td>{{ $i->atas_nama }}</td>
+                                                <td>{{ $i->alamat_penerima }}</td>
+                                                <td>{{ $i->telepon }}</td>
+                                                <td>{{ $i->tanggal_invoice }}</td>
+                                                <td>{{ $i->jatuh_tempo }}</td>
+                                                <td>{{ $i->status }}</td>
+                                                <td>
+                                                    <button class="btn btn-danger"><i class="fas fa-trash"></i> hapus</button>
+                                                    <a class="btn btn-info" href="{{ route('member.lihat_invoice', $i->kode_invoice) }}"><i class="fas fa-eye"></i> lihat</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr class="text-center">
+                                            <td colspan="9">Tidak ada Invoice</td>
+                                        </tr>
+                                    @endif
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark">tutup</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
     
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> --}}
@@ -502,9 +565,14 @@ input[type=number]
     <script src="{{ asset('plugins/OwlCarousel2-2.2.1/owl.carousel.js') }}"></script>
     <script src="{{ asset('plugins/easing/easing.js') }}"></script>
     <script src="{{ asset('sweetalert/sweetalert2.all.min.js') }}"></script>
+    <script src="https://kit.fontawesome.com/36e4830af0.js"></script>
     @yield("js")
     <script>
         $(document).ready(function(){
+
+            $(".btn-invoice").click(function(){
+                $(".modal-invoice").modal("show");
+            });
 
             $(".kepala-checkbox").click(function(){
                 $(".anak-checkbox").each(function(){
@@ -773,6 +841,54 @@ input[type=number]
             });
 
         });
+
+        $(document).on("click", ".btn-hapus-keranjang", function(){
+                var kode = $(this).attr("data-kode");
+                var item_keranjang = $(".item-keranjang-" + kode);
+                var barang = $(this).attr("data-barang");
+                var counter_nomor_keranjang = $(".counter-nomor-keranjang").text();
+                var total_keranjang = parseInt($(".total-keranjang").text()) - 1;
+                var keranjang = $(".angka-keranjang").text();
+
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/keranjang/keluarkan') }}",
+                    data:{
+                        "_token" : $("[name='_token']").val(),
+                        kode_keranjang: kode
+                    },
+                    success: function(hasil){
+                        item_keranjang.hide();
+                        $(".btn-keluarkan-" + barang).hide();
+                        $(".btn-tambah-keranjang-" + barang).show();
+                        $(".angka-keranjang").text(parseInt(keranjang) - 1);
+                        $(".keranjang-container").html("");
+
+                        for(var i = 0; i < hasil.length; i++){
+                            var counter = i + 1;
+                            $(".keranjang-container").append(
+                                "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] +  "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
+                                    "<td scope='row'>" + counter + "</td>" +
+                                    "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
+                                    "<td>" +
+                                        "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly>" + hasil[i]['jumlah'] + "</div>" +
+                                        "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                    "</td>" +
+                                    "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                    "<td>" + hasil[i]['total'] + "</td>" +
+                                    "<td>" + 
+                                        "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                        "<button class='btn btn-success btn-bayar-keranjang' data-kode='{{ $k->kode_keranjang }}'> bayar</button>" +
+                                    "</td>" +
+                                "</tr>"
+                            );
+                        }
+                    }
+                });
+            });
     </script>
     </body>
     

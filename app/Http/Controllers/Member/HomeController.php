@@ -13,6 +13,8 @@ use App\Invoice;
 use App\Invoice_barang;
 use App\Member;
 use App\Bank;
+use DOMPDF;
+use App\Bukti;
 
 class HomeController extends Controller
 {
@@ -35,6 +37,10 @@ class HomeController extends Controller
             Session::put("keranjang", Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get());
     
             $keranjang = Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get();
+
+            $invoice = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->get();
+
+            Session::put("invoice", $invoice);
 
             return view('member.home', compact("kategori", "barang", "keranjang"));
         }
@@ -154,7 +160,7 @@ class HomeController extends Controller
 
         $invoice->id_member = Auth::guard("member")->user()->id_member;
 
-        $invoice->status = "pending";
+        $invoice->status = "belum dibuat";
 
         $invoice->save();
 
@@ -207,10 +213,19 @@ class HomeController extends Controller
         $bank = Bank::all();
 
         return view("member.detail_invoice", compact('invoice', "invoice_sum", "member", "bank"));
-
     }
 
     public function konfirmasi($kode_invoice, Request $request){
+
+        date_default_timezone_set("Asia/Jakarta");
+
+        $tanggal = now();
+
+        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-"), 3);
+
+        $tanggal_pengganti = substr($tanggal, strrpos($tanggal, "-") + 1, 2) + 7;
+
+        $jatuh_tempo = str_replace($tanggal_sekarang, "-".$tanggal_pengganti, $tanggal);
 
         $invoice = Invoice::find($kode_invoice);
 
@@ -218,12 +233,118 @@ class HomeController extends Controller
 
         $invoice->alamat_penerima = $request->alamat_penerima;
 
+        $invoice->tanggal_invoice = $tanggal;
+
+        $invoice->jatuh_tempo = $jatuh_tempo;
+
         $invoice->telepon = $request->telepon;
 
-        $invoice->status = "menunggu";
+        $invoice->status = "menunggu pembayaran";
 
         $invoice->update();
 
-        Session::flash("invoice", "berhasil");
+        // Session::flash("invoice", "berhasil");
+        
+        return redirect()->route("member.lihat_invoice", $kode_invoice);
+    }
+
+    public function lihat_invoice($kode_invoice){
+
+        $invoice = Invoice::find($kode_invoice);
+
+        $invoice_sum = Invoice_barang::where("kode_invoice", $kode_invoice)->sum("total");
+
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $bank = Bank::all();
+
+        return view("member.lihat_invoice", compact('invoice', "invoice_sum", "member", "bank"));
+    }
+
+    public function print_invoice($kode_invoice){
+
+        $invoice = Invoice::find($kode_invoice);
+
+        $invoice_sum = Invoice_barang::where("kode_invoice", $kode_invoice)->sum("total");
+
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $bank = Bank::all();
+
+        return view("member.print_invoice", compact('invoice', "invoice_sum", "member", "bank"));
+    }
+
+    public function konfirmasi_pembayaran(){
+        return view("member.konfirmasi_pembayaran");
+    }
+
+    public function upload_bukti(Request $request){
+        
+        $cek = Invoice::find($request->kode_invoice);
+        
+        $cek_ada = Bukti::where("kode_invoice", $request->kode_invoice)->get();
+
+        if(!empty($cek)){
+
+            if(count($cek_ada) > 0){
+
+                Session::flash("invoice_sudah_ada", "gagal");
+
+                return redirect()->back();
+
+            }else{
+                
+                $id_member = Member::max("id_member");
+
+                $id_member_slash = strrpos($id_member, "-");
+
+                $id_member_substr = substr($id_member, $id_member_slash + 1) +1;
+
+                $invoice_substr = substr($request->kode_invoice, strrpos($request->kode_invoice, "-") + 1) + 1;
+                
+                $bukti_max = Bukti::max("kode_bukti");
+
+                $bukti_substr = substr($bukti_max, strrpos($bukti_max, "-") + 1) + 1;
+                
+                $bukti = new Bukti;
+
+                $bukti->kode_bukti = "BKT-".$id_member_substr."-".$invoice_substr."-".$bukti_substr;
+
+                $bukti->id_member = $id_member;
+
+                $bukti->kode_invoice = $request->kode_invoice;
+
+                //upload foto
+                
+                $bukti_pembayaran = $request->file("bukti_pembayaran");
+                
+                $tujuan_upload = 'images/bukti/';
+
+                $nama_file = time()."-".$bukti_pembayaran->getClientOriginalName();
+                
+                $bukti_pembayaran->move($tujuan_upload, $nama_file);
+
+                $bukti->bukti = $nama_file;
+
+                $bukti->tanggal_upload = now();
+
+                $bukti->status = "mengunggu konfirmasi";
+
+                $bukti->save();
+
+                $invoice = Invoice::find($request->kode_invoice);
+
+                $invoice->status = "mengunggu konfirmasi";
+
+
+                Session::flash("invoice_berhasil", "berhasil");
+
+                return redirect()->back();
+            }
+        }else{
+            Session::flash("invoice_tidak_ada", "gagal");
+
+            return redirect()->back();
+        }
     }
 }

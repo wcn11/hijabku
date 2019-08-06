@@ -10,14 +10,13 @@
 <div class="container">
 
     <div class="text-right p-2">
-        <button class="btn btn-dark btn-konfirmasi"><i class="fas fa-cash-register"></i> Konfirmasi invoice</button>
+        <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a>
+        <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a>
     </div>
     <div class="text-center">
-        <h1>Konfirmasi Invoice</h1>
+        <h1>Rincian Invoice</h1>
     </div>
     <div class="card">
-        <form class="form-invoice" action="{{ route('member.konfirmasi_invoice', $invoice->kode_invoice) }}" method="POST">
-            @csrf
             <div class="card-header">
                 Invoice
                 <strong>#{{ $invoice->kode_invoice }}</strong>
@@ -32,8 +31,8 @@
                             <strong>Hijabku.com</strong>
                         </div>
                         <div>Invoice: <strong>#{{ $invoice->kode_invoice }}</strong></div>
-                        <div>Tanggal: {{ now() }}</div>
-                        <div>Jatuh tempo: <u>7 Hari setelah invoice ini dikonfirmasi</u></div>
+                        <div>Tanggal: <span class="text-danger"><u>{{ $invoice->jatuh_tempo }}</u></span></div>
+                        <div>Jatuh tempo: {{ $invoice->tanggal_invoice }}</div>
                         <div>Email: contact@hijabku.com</div>
                         <div>Telepon: +6281234567890</div>
                         <div>
@@ -78,36 +77,9 @@
                         <div>
                             <strong>{{ $member->nama }}</strong>
                         </div>
-                        <div>Atas Nama:
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <input type="checkbox" class="atas_nama" data-nama="{{ $member->nama }}" data-toggle="tooltip" data-placement="top" title="klik box jika penerima sama dengan nama akun anda">
-                                    </div>
-                                </div>
-                                <input type="text" class="form-control" name="atas_nama" placeholder="Atas nama">
-                            </div>
-                        </div>
-                        <div>Telepon: 
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <input type="checkbox" class="telepon" data-telepon="{{ $member->telepon }}" data-toggle="tooltip" data-placement="top" title="klik box jika telepon penerima sama dengan telepon akun anda">
-                                    </div>
-                                </div>
-                                <input class="form-control" name="telepon" placeholder="Telepon penerima">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <input type="checkbox" class="alamat_penerima" data-alamat="{{ $member->alamat }}" data-toggle="tooltip" data-placement="top" title="klik box jika alamat penerima sama dengan alamat akun anda">
-                                    </div>
-                                </div>
-                                <textarea class="form-control" name="alamat_penerima" placeholder="Alamat penerima"></textarea>
-                            </div>
-                        </div>
+                        <div>Atas Nama: {{ $invoice->atas_nama }}</div>
+                        <div>Telepon: {{ $invoice->telepon }}</div>
+                        <div>Alamat: {{ $invoice->alamat_penerima }}</div>
                     </div>
     
     
@@ -184,7 +156,6 @@
                 </div>
     
             </div>
-            </form>
         </div>
     </div>
 @endsection
@@ -194,103 +165,6 @@
     <script>
         $(function () {
 
-            $(".btn-konfirmasi").click(function(){
-                var nama = $("[name='atas_nama']").val();
-                var alamat = $("[name='alamat_penerima']").val();
-                var telepon = $("[name='telepon']").val();
-
-                if(nama == ""){
-                    Swal.fire({
-                        title: 'Nama penerima kosong',
-                        html: "Harap isi nama penerima",
-                        type: "warning",
-                        animation: false,
-                        customClass: {
-                            popup: 'animated shake'
-                        }
-                    })
-                }else if(alamat == ""){
-                    Swal.fire({
-                        title: 'Alamat penerima kosong',
-                        html: "Harap isi Alamat penerima",
-                        type: "warning",
-                        animation: false,
-                        customClass: {
-                            popup: 'animated shake'
-                        }
-                    })
-                }else if(telepon == ""){
-                    Swal.fire({
-                        title: 'Telepon penerima kosong',
-                        html: "Harap isi Telepon penerima",
-                        type: "warning",
-                        animation: false,
-                        customClass: {
-                            popup: 'animated shake'
-                        }
-                    })
-                }else{
-                    $(".form-invoice").submit();
-                }
-            });
-
-            $("[name='jatuh_tempo']").val(tanggal);
-
-            $('[data-toggle="tooltip"]').tooltip();
-
-            $(".atas_nama").click(function(){
-                var nama = $(this).attr("data-nama");
-
-                if($(this).is(":checked")){
-                    $("[name='atas_nama']").val(nama);
-                }else{
-                    $("[name='atas_nama']").val("");
-                }
-            });
-
-            $(".alamat_penerima").click(function(){
-                var alamat = $(this).attr("data-alamat");
-
-                if($(this).is(":checked")){
-                    if(alamat == ""){
-                        Swal.fire({
-                            position: 'center',
-                            type: 'info',
-                            html: "<span class='text-danger'>Anda belum melengkapi bagian alamat pada profil anda!</span><br><br>Namun anda dapat mengisi alamat penerima disamping checkbox <strong>alamat penerima</strong>",
-                            title: 'Kosong',
-                            showConfirmButton: true,
-                            // timer: 1500
-                        });
-                        $(this).prop("checked", false);
-                    }else{
-                        $("[name='alamat_penerima']").val(alamat);
-                    }
-                }else{
-                    $("[name='alamat_penerima']").val("");
-                }
-            });
-
-            $(".telepon").click(function(){
-                var telepon = $(this).attr("data-telepon");
-
-                if($(this).is(":checked")){
-                    if(telepon == ""){
-                        Swal.fire({
-                            position: 'center',
-                            type: 'info',
-                            html: "<span class='text-danger'>Anda belum mengisi bagian telepon pada profil anda!</span><br><br>Namun anda dapat mengisi telepon penerima disamping checkbox <strong>telepon penerima</strong>",
-                            title: 'Kosong',
-                            showConfirmButton: true,
-                            // timer: 1500
-                        });
-                        $(this).prop("checked", false);
-                    }else{
-                        $("[name='telepon']").val(telepon);
-                    }
-                }else{
-                    $("[name='telepon']").val("");
-                }
-            });
         })
     </script>
 @endsection
