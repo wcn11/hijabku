@@ -15,6 +15,8 @@ use App\Member;
 use App\Bank;
 use DOMPDF;
 use App\Bukti;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -34,16 +36,40 @@ class HomeController extends Controller
     
             $barang = Barang::all();
     
-            Session::put("keranjang", Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get());
+            // Session::put("keranjang", Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get());
     
-            $keranjang = Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get();
+            // $keranjang = Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get();
 
             $invoice = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->get();
 
             Session::put("invoice", $invoice);
 
-            return view('member.home', compact("kategori", "barang", "keranjang"));
+            return view('member.home', compact("kategori", "barang"));
         }
+    }
+
+    public function data_keranjang(){
+        $keranjang = Keranjang::where("id_member", Auth::guard("member")->user()->id_member)->get();
+
+        $kode_barang = []; //hanya untuk mengeluarkan relasi    
+        
+        foreach($keranjang as $k){  
+            $kode_barang[] = array($k->barang_ke_keranjang);
+        }
+
+        return response()->json($keranjang);
+    }
+
+    public function data_invoice(){
+        $invoice = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->get();
+
+        $kode_invoice = []; //hanya untuk mengeluarkan relasi    
+        
+        foreach($invoice as $i){  
+            $kode_invoice[] = array($i->kode_invoice);
+        }
+
+        return response()->json($invoice);
     }
 
     public function update_keranjang(Request $request){
@@ -71,6 +97,12 @@ class HomeController extends Controller
             $kode_barang[] = array( $k->barang_ke_keranjang->kode_barang);
         }
         return response()->json($kode_barang);
+    }
+
+    public function data_history(){
+        $history = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->where("status", "lunas")->get();
+
+        return response()->json($history);
     }
 
     public function keluarkan(Request $request){
@@ -143,6 +175,16 @@ class HomeController extends Controller
     }
 
     public function invoice(Request $request){
+
+        date_default_timezone_set("Asia/Jakarta");
+
+        $tanggal = date("Y-m-d H:i:s");
+
+        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 2);
+
+        $tanggal_pengganti = substr($tanggal, strrpos($tanggal, "-") + 1, 2) + 7;
+        
+        $jatuh_tempo = str_replace_last($tanggal_sekarang, $tanggal_pengganti, $tanggal);
         
         $id_member = Member::max("id_member");
 
@@ -159,6 +201,10 @@ class HomeController extends Controller
         $invoice->kode_invoice = "INV-".$id_member_substr."-".$invoice_substr;
 
         $invoice->id_member = Auth::guard("member")->user()->id_member;
+
+        $invoice->tanggal_invoice = $tanggal;
+
+        $invoice->jatuh_tempo = $jatuh_tempo;
 
         $invoice->status = "belum dibuat";
 
@@ -219,13 +265,13 @@ class HomeController extends Controller
 
         date_default_timezone_set("Asia/Jakarta");
 
-        $tanggal = now();
+        $tanggal = date("Y-m-d H:i:s");
 
-        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-"), 3);
+        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 2);
 
         $tanggal_pengganti = substr($tanggal, strrpos($tanggal, "-") + 1, 2) + 7;
-
-        $jatuh_tempo = str_replace($tanggal_sekarang, "-".$tanggal_pengganti, $tanggal);
+        
+        $jatuh_tempo = str_replace_last($tanggal_sekarang, $tanggal_pengganti, $tanggal);
 
         $invoice = Invoice::find($kode_invoice);
 
@@ -346,5 +392,70 @@ class HomeController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function hapus_invoice($kode_invoice){
+        $invoice = Invoice::find($kode_invoice);
+
+        $invoice->delete();
+
+        Session::flash("invoice_hapus", "berhasil");
+
+        return redirect()->route("member.dashboard");
+    }
+
+    public function lihat_bukti_menunggu($kode_invoice){
+
+        $invoice = Invoice::find($kode_invoice);
+
+        $invoice_sum = Invoice_barang::where("kode_invoice", $kode_invoice)->sum("total");
+
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $bank = Bank::all();
+
+        // echo $invoice->invoice_ke_bukti[0]['bukti'];
+        return view("member.invoice_menunggu", compact("invoice", "bank", "member", "invoice_sum"));
+    }
+
+    public function update_bukti(Request $request){
+
+        $bukti = Bukti::find($request->kode_bukti);
+
+        File::delete("images/bukti/".$bukti->bukti);
+
+        $bukti_pembayaran = $request->file("bukti_update");
+                
+        $tujuan_upload = 'images/bukti/';
+
+        $nama_file = time()."-".$bukti_pembayaran->getClientOriginalName();
+        
+        $bukti_pembayaran->move($tujuan_upload, $nama_file);
+
+        $bukti->bukti = $nama_file;
+
+        $bukti->update();
+
+        Session::flash("update_bukti", "berhasil");
+
+        return redirect()->back();
+
+        // echo $invoice->invoice_ke_bukti[0]['bukti'];
+        // return view("member.invoice_menunggu", compact("invoice", "bank", "member", "invoice_sum"));
+    }
+
+    public function lihat_bukti_history($kode_invoice){
+
+        $invoice = Invoice::find($kode_invoice);
+
+        $invoice_sum = Invoice_barang::where("kode_invoice", $kode_invoice)->sum("total");
+
+        $bukti = $invoice->invoice_ke_bukti;
+
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $bank = Bank::all();
+
+        return view("member.invoice_history", compact("invoice", "bank", "member", "invoice_sum", "bukti"));
     }
 }

@@ -14,4 +14,8 @@ class Bukti extends Model
     public $timestamps = false;
 
     protected $fillable = ["kode_bukti", 'id_member', 'kode_invoice','bukti', 'tanggal_upload', 'status'];
+
+    public function invoice_ke_bukti(){
+        return $this->belongsTo("App\Invoice", "kode_invoice");
+    }
 }

@@ -234,7 +234,7 @@
                 }
             });
 
-            $("[name='jatuh_tempo']").val(tanggal);
+            // $("[name='jatuh_tempo']").val(tanggal);
 
             $('[data-toggle="tooltip"]').tooltip();
 

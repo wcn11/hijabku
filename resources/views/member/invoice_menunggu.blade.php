@@ -10,7 +10,7 @@
 <div class="container">
 
     <div class="text-right p-2">
-        <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a>
+        {{-- <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a> --}}
         <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a>
     </div>
     <div class="text-center">
@@ -157,6 +157,31 @@
     
             </div>
         </div>
+
+        <section class="mt-2">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div>
+                            <p>Bukti pembayaran:</p>
+                            <img src="{{ url('images/bukti/'.$invoice->invoice_ke_bukti[0]['bukti']) }}" class="img-fluid rounded">
+                            <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 update">
+                        <div>
+                            <p>Preview bukti pembayaran:</p>
+                            <img src="#" class="img-fluid rounded bukti_pembayaran">
+                            <form action="{{ route('member.update_bukti') }}" method="POST" class="form-upload" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="kode_bukti" value="{{ $invoice->invoice_ke_bukti[0]['kode_bukti'] }}">
+                                <input type="file" name="bukti_update" accept="image/*">
+                                <button type="submit" class="btn btn-dark mt-2 btn-upload"><i class="fas fa-upload"></i> update bukti</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
     </div>
 @endsection
 
@@ -164,7 +189,47 @@
     <script src="{{ asset('js/moment.js') }}"></script>
     <script>
         $(function () {
+            $(".update").hide();
+            $("[name='bukti_update']").hide();
 
+            $(".btn-edit").click(function(){
+                // $(".update").show();
+                $("[name='bukti_update']").trigger("click");
+            });
+
+            
+
+        $("[name='bukti_update']").on("change", function(){
+            readURL(this);
+            $(".update").show();
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                $('.bukti_pembayaran').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
         })
     </script>
+
+ 
+@if (Session::has('update_bukti'))
+<script>
+    Swal.fire({
+        title: 'Terupload',
+        html: "Bukti pembayaran telah diperbaharui",
+        type: "success",
+        animation: false,
+        customClass: {
+            popup: 'animated tada'
+        }
+    })
+</script>
+@endif
 @endsection

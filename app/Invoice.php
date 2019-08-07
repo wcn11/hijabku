@@ -22,4 +22,8 @@ class Invoice extends Model
     public function member_ke_invoice(){
         return $this->belongsTo("App\Member", "id_member");
     }
+
+    public function invoice_ke_bukti(){
+        return $this->hasMany("App\Bukti", "kode_invoice");
+    }
 }

@@ -39,8 +39,8 @@
                             <strong>Hijabku.com</strong>
                         </div>
                         <div>Invoice: <strong>#{{ $invoice->kode_invoice }}</strong></div>
-                        <div>Tanggal: <span class="text-danger"><u>{{ $invoice->jatuh_tempo }}</u></span></div>
-                        <div>Jatuh tempo: {{ $invoice->tanggal_invoice }}</div>
+                        <div>Tanggal: {{ $invoice->tanggal_invoice }}</div>
+                        <div>Jatuh tempo: <span class="text-danger"><u>{{ $invoice->jatuh_tempo }}</u></span></div>
                         <div>Email: contact@hijabku.com</div>
                         <div>Telepon: +6281234567890</div>
                         <div>

@@ -10,8 +10,8 @@
 <div class="container">
 
     <div class="text-right p-2">
-        <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a>
-        <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a>
+        {{-- <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a> --}}
+        {{-- <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a> --}}
     </div>
     <div class="text-center">
         <h1>Rincian Invoice</h1>
@@ -122,24 +122,6 @@
                     <div class="col-lg-4 col-sm-5 ml-auto">
                         <table class="table table-clear">
                             <tbody>
-                                {{-- <tr>
-                                    <td class="left">
-                                        <strong>Subtotal</strong>
-                                    </td>
-                                    <td class="right">$8.497,00</td>
-                                </tr>
-                                <tr>
-                                    <td class="left">
-                                        <strong>Discount (20%)</strong>
-                                    </td>
-                                    <td class="right">$1,699,40</td>
-                                </tr>
-                                <tr>
-                                    <td class="left">
-                                        <strong>VAT (10%)</strong>
-                                    </td>
-                                    <td class="right">$679,76</td>
-                                </tr> --}}
                                 <tr>
                                     <td class="left">
                                         <strong>Total</strong>
@@ -157,14 +139,23 @@
     
             </div>
         </div>
+
+        <section class="mt-2">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div>
+                            <p>Bukti pembayaran:</p>
+                            <img src="{{ url('images/bukti/'.$invoice->invoice_ke_bukti[0]['bukti']) }}" class="img-fluid rounded">
+                            <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
     </div>
 @endsection
 
 @section('js')
     <script src="{{ asset('js/moment.js') }}"></script>
-    <script>
-        $(function () {
 
-        })
-    </script>
 @endsection

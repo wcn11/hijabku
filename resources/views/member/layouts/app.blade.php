@@ -180,7 +180,7 @@ input[type=number]
                                     <li class="checkout">
                                         <a href="javascript:void(0)" data-target=".modal-keranjang" class="trigger-keranjang" data-toggle="modal">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                            <span id="checkout_items" data-angka-keranjang="{{ Session::get("keranjang")->count() }}" class="checkout_items angka-keranjang">{{ Session::get("keranjang")->count() }}</span>
+                                            <span id="checkout_items" class="checkout_items angka-keranjang"></span>
                                         </a>
                                     </li>
                                 @endif
@@ -196,7 +196,7 @@ input[type=number]
                                                 </a>
                                                 <div class="dropdown-menu">
                                                     <button type="button" class="btn btn-block btn-invoice"><i class="fa fa-sign-out-alt"></i> invoice</button>
-                                                    <button type="button" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> profil</button>
+                                                    <button type="button" class="btn btn-block" data-toggle="modal" data-target=".modal-profil"><i class="fa fa-sign-out-alt"></i> profil</button>
                                                     <form action="{{ route('member.logout') }}" method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
@@ -434,72 +434,45 @@ input[type=number]
     
     </div>
 
-        
-    <div class="modal fade modal-keranjang" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header justify-content-center">
-                <div class="">
-                    <i class="fa fa-cart-plus"></i> Keranjang anda
-                    {{-- <button type="button" data-dismiss="modal" class="close">&times;</button> --}}
+    @if(Auth::guard('member')->check())
+        <div class="modal fade modal-keranjang" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <div class="">
+                        <i class="fa fa-cart-plus"></i> Keranjang anda
+                        {{-- <button type="button" data-dismiss="modal" class="close">&times;</button> --}}
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-border">
+                        <thead>
+                            <tr class="text-center">
+                                <th><input type="checkbox" class="kepala-checkbox"></th>
+                                <th scope="col">No</th>
+                                <th scope="col">Foto</th>
+                                <th scope="col">Nama Barang</th>
+                                <th scope="col">Harga</th>
+                                <th scope="col">Jumlah</th>
+                                <th scope="col">Stok</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="keranjang-container">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark btn-bayar-semua"> Bayar Terpilih</button>
                 </div>
             </div>
-            <div class="modal-body">
-                <table class="table table-border">
-                    <thead>
-                        <tr class="text-center">
-                            <th><input type="checkbox" class="kepala-checkbox"></th>
-                            <th scope="col">No</th>
-                            <th scope="col">Foto</th>
-                            <th scope="col">Nama Barang</th>
-                            <th scope="col">Harga</th>
-                            <th scope="col">Jumlah</th>
-                            <th scope="col">Stok</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="keranjang-container">
-                        @if(Session::has("keranjang"))
-                            @if(Session::get("keranjang")->isEmpty())
-                                <tr class="text-center">
-                                    <td colspan="8">Belum ada barang</td>
-                                </tr>
-                            @else
-                                @foreach(Session::get('keranjang') as $k_key => $k)
-                                    <tr class="text-center item-keranjang-{{ $k->kode_keranjang }} item-keranjang-{{ $k->barang_ke_keranjang->kode_barang }}">
-                                        <td><input type="checkbox" class="anak-checkbox" data-barang="{{ $k->barang_ke_keranjang->kode_barang }}" data-kode="{{ $k->kode_keranjang }}"></td>
-                                        <th scope="row" class="counter-nomor-keranjang">{{ $k_key + 1 }}</th>
-                                        <td><img src="{{ url('images/barang/'.$k->barang_ke_keranjang->gambar) }}" class="img-fluid"></td>
-                                        <td>{{ $k->barang_ke_keranjang->nama_barang }}</td>
-                                        <td>{{ $k->barang_ke_keranjang->harga_barang }}</td>
-                                        <td>
-                                            <div type="text" class="container-jumlah-{{ $k->kode_keranjang }}" readonly> {{ $k->jumlah }} </div>
-                                            <input type="range" data-kode="{{ $k->kode_keranjang }}" data-harga="{{ $k->barang_ke_keranjang->harga_barang }}" data-jumlah="{{ $k->jumlah }}" readonly min="1" max="{{ $k->barang_ke_keranjang->stok }}" step="1" value="{{ $k->jumlah }}" class="p-3 counter-keranjang counter-keranjang-{{ $k->kode_keranjang }}">
-                                        </td>
-                                        <td>{{ $k->barang_ke_keranjang->stok }}</td>
-                                        <td class="total-keranjang">{{ $k->total }}</td>
-                                        <td>
-                                            <button class="btn btn-danger btn-hapus-keranjang" data-kode="{{ $k->kode_keranjang }}" data-barang="{{ $k->barang_ke_keranjang->kode_barang }}"> hapus</button>
-                                            <button class="btn btn-success btn-bayar-keranjang" data-kode="{{ $k->kode_keranjang }}"> bayar</button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
-                        @endif
-                    </tbody>
-                  </table>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-dark btn-bayar-semua"> Bayar Terpilih</button>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="modal fade modal-invoice" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade modal-invoice" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-              <div class="modal-content">
+                <div class="modal-content">
                 <div class="modal-header justify-content-center">
                     Daftar Invoice
                 </div>
@@ -520,43 +493,100 @@ input[type=number]
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @if(Session::has('invoice'))
-
-                                    @if(Session::get("invoice")->count() > 0)
-                                        @foreach(Session::get("invoice") as $key => $i)
-                                            <tr>
-                                                <th scope="row">{{  $key + 1 }}</th>
-                                                <td>{{ $i->kode_invoice }}</td>
-                                                <td>{{ $i->atas_nama }}</td>
-                                                <td>{{ $i->alamat_penerima }}</td>
-                                                <td>{{ $i->telepon }}</td>
-                                                <td>{{ $i->tanggal_invoice }}</td>
-                                                <td>{{ $i->jatuh_tempo }}</td>
-                                                <td>{{ $i->status }}</td>
-                                                <td>
-                                                    <button class="btn btn-danger"><i class="fas fa-trash"></i> hapus</button>
-                                                    <a class="btn btn-info" href="{{ route('member.lihat_invoice', $i->kode_invoice) }}"><i class="fas fa-eye"></i> lihat</a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr class="text-center">
-                                            <td colspan="9">Tidak ada Invoice</td>
-                                        </tr>
-                                    @endif
-                                @endif
+                            <tbody class="container-invoice">
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-dark">tutup</button>
+                    <button class="btn btn-dark" data-dismiss="modal" class="close">tutup</button>
                 </div>
-              </div>
+                </div>
             </div>
-          </div>
-          
+        </div>
+
+        <div class="modal fade modal-profil" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header justify-content-center">
+                        Profil
+                    </div>
+                    <div class="modal-body">
+                        <nav>
+                            <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Profil</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">History Pemesanan</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                @if(Auth::guard('member')->check())
+                                    @if(Auth::guard('member')->user()->profil == "default_member.png")
+                                        <form class="p-3">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="nama">Nama <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama anda" value="{{ Auth::guard('member')->user()->nama }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" id="email" placeholder="Masukkan email anda" value="{{ Auth::guard('member')->user()->email }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="alamat">Alamat</label>
+                                                        <input type="text" class="form-control" id="alamat" placeholder="Masukkan alamat anda" value="{{ Auth::guard('member')->user()->alamat }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="telepon">Telepon</label>
+                                                        <input type="text" class="form-control" id="telepon" placeholder="Masukkan telepon anda" value="{{ Auth::guard('member')->user()->telepon }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div>
+                                                        <p>Foto Profil:</p>
+                                                        <img src="{{ url('images/member/'.Auth::guard('member')->user()->profil) }}" class="img-fluid rounded">
+                                                        
+                                                        <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    {{-- @else --}}
+                                    @endif
+                                @endif
+                            </div>
+
+                            {{-- tab history --}}
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">No</th>
+                                            <th scope="col">Kode invoice</th>
+                                            <th scope="col">Atas Nama</th>
+                                            <th scope="col">Alamat Penerima</th>
+                                            <th scope="col">Tanggal Invoice</th>
+                                            <th scope="col">Jatuh Tempo</th>
+                                            <th scope="col">Telepon</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="container-history">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div class="modal-footer">
+
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+    @endif
     
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> --}}
@@ -567,8 +597,179 @@ input[type=number]
     <script src="{{ asset('sweetalert/sweetalert2.all.min.js') }}"></script>
     <script src="https://kit.fontawesome.com/36e4830af0.js"></script>
     @yield("js")
+    @if(Auth::guard("member")->check())
     <script>
         $(document).ready(function(){
+
+            keranjang();
+            invoice();
+            history();
+
+            $("[name='pp']").hide();
+
+            function history(){
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/data/history') }}",
+                    data: {
+                        "_token": $("[name='_token']").val()
+                    },
+                    success: function(hasil){
+                        // console.log(hasil);
+                        if(hasil.length > 0){
+
+                            for(var i = 0; i < hasil.length; i++){
+                                var counter = i + 1;
+                                $(".container-history").append(
+                                    "<tr>" +
+                                        "<td>" + counter + "</td>" +
+                                        "<td>" + hasil[i]['kode_invoice'] + "</td>" +
+                                        "<td>" + hasil[i]['atas_nama'] + "</td>" +
+                                        "<td>" + hasil[i]['alamat_penerima'] + "</td>" +
+                                        "<td>" + hasil[i]['tanggal_invoice'] + "</td>" +
+                                        "<td>" + hasil[i]['jatuh_tempo'] + "</td>" +
+                                        "<td>" + hasil[i]['telepon'] + "</td>" +
+                                        "<td><span class='badge badge-success'>" + hasil[i]['status'] + "</span></td>" +
+                                        "<td>"+
+                                            "<a class='btn btn-info' href=''><i class='fas fa-eye'></i> Lihat</a>" +
+                                        "</td>" +
+                                    "</tr>"
+                                );
+                            }
+                        }else{
+                            $(".container-history").append(
+                                "<tr class='text-center'>" +
+                                    "<td colspan='9'>Belum ada history pemesanan</td>" +
+                                "</tr>"
+                            );
+                        }
+                    }
+                });
+            }
+
+            function invoice(){
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/data/invoice') }}",
+                    data: {
+                        "_token": $("[name='_token']").val()
+                    },
+                    success: function(hasil){
+                        // console.log(hasil);
+                        for(var i = 0; i < hasil.length; i++){
+                            var counter = i + 1;
+                            var status = "";
+                            var aksi = "";
+                            var kode_invoice = hasil[i]['kode_invoice'];
+                            var route_hapus = "http://127.0.0.1:8000/member/invoice/hapus/" + kode_invoice;
+                            var route_selesaikan = "http://127.0.0.1:8000/member/invoice/bayar/" + kode_invoice;
+                            var bukti = "http://127.0.0.1:8000/member/invoice/lihat/bukti/menunggu/" + kode_invoice;
+                            var invoice_selesai = "http://127.0.0.1:8000/member/invoice/lihat/bukti/history/" + kode_invoice;
+                            // var route_konfirmasi = 
+
+                            // console.log(route);
+
+                            // penentuan status 
+                            if(hasil[i]['status'] == "jatuh tempo"){
+                                var status = "<span class='badge badge-danger p-2 rounded'>" + hasil[i]['status'] + "</span>";
+                            }else if(hasil[i]['status'] == "lunas"){
+                                var status = "<span class='badge badge-success'>" + hasil[i]['status'] + "</span>";
+                            }else{
+                                var status = "<span class='badge badge-info'>" + hasil[i]['status'] + "</span>";
+                            }   
+
+                            // penentuan aksi
+                            if(hasil[i]['status'] == "jatuh tempo"){
+                                var aksi = "<span class='badge badge-danger p-2 rounded'>" + hasil[i]['status'] + "</span>";
+                            }else if(hasil[i]['status'] == "menunggu pembayaran"){
+                                var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-secondary' href='" + bukti + "'><i class='fas fa-eye'></i> lihat bukti</a>" + "<a class='btn btn-info' href='{{ route('member.konfirmasi_pembayaran') }}'><i class='fas fa-eye'></i> konfirmasi pembayaran</>";
+                            }else if(hasil[i]['status'] == "belum dibuat"){
+                                var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-info' href='" + route_selesaikan + "'><i class='fas fa-eye'></i> selesaikan</a>";
+                            }else{
+                                var aksi = "<a class='btn btn-success' href='" + invoice_selesai + "'><span class='fas fa-eye'> lihat</span></a>";
+                            }
+
+                            $(".container-invoice").append(
+                                "<tr>" +
+                                    "<th scope='row'>" + counter + "</th>" +
+                                    "<td>" + hasil[i]['kode_invoice'] + "</td>" +
+                                    "<td>" + 
+                                        "@if(" + hasil[i]['atas_nama']->isEmpty() + ")" +
+                                            "belum diisi" +
+                                        "@else" +
+                                            hasil[i]['atas_nama'] +
+                                        "@endif" +
+                                    "</td>" +
+                                    "<td>" +
+                                        "@if(" + hasil[i]['alamat_penerima']->isEmpty() + ")" +
+                                            "belum diisi" +
+                                        "@else" +
+                                            hasil[i]['alamat_penerima'] +
+                                        "@endif" +
+                                    "</td>" +
+                                    "<td>" +
+                                        "@if(" + hasil[i]['telepon']->isEmpty() + ")" +
+                                            "belum diisi" +
+                                        "@else" +
+                                            hasil[i]['telepon'] +
+                                        "@endif" +
+                                    "</td>" +
+                                    "<td>" + hasil[i]['tanggal_invoice'] + "</td>" +
+                                    "<td>" + hasil[i]['jatuh_tempo'] + "</td>" +
+                                    "<td>" +
+                                        status +
+                                    "</td>" +
+                                    "<td>" +
+                                        aksi +
+                                    "</td>" +
+                                "</tr>"
+                            );
+                        }
+                    }
+                });
+            }
+
+            function keranjang(){
+                $.ajax({
+                    type: "post",
+                    url: "{{ url('member/data/keranjang') }}",
+                    data: {
+                        "_token": $("[name='_token']").val()
+                    },
+                    success: function(hasil){
+                        $(".angka-keranjang").text("");
+                        $(".angka-keranjang").text(hasil.length);
+                        $(".keranjang-container").html("");
+                        if(hasil.length == 0){
+                            $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
+                        }else{
+                            for(var i = 0; i < hasil.length; i++){
+                                var counter = i + 1;
+                                $(".keranjang-container").append(
+                                    
+                                    "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
+                                        "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
+                                        "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
+                                        "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
+                                        "<td>" +
+                                            "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
+                                            "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                        "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                        "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
+                                        "<td>" +
+                                            "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                            "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
+                                        "</td>" +
+                                    "</tr>"
+                                );
+                            }
+                        }
+                    }
+                });
+            }
 
             $(".btn-invoice").click(function(){
                 $(".modal-invoice").modal("show");
@@ -579,16 +780,69 @@ input[type=number]
                     $(this).trigger("click");
                 });
             });
+        
+        $(document).on("click", ".btn-bayar-keranjang",function(){
+            var kode_keranjang = $(this).attr("data-kode");
+
+            $.ajax({  //masukkan kode invoice dahulu
+                    type: "post",
+                    url: "{{ url('member/invoice') }}",
+                    data:{
+                        "_token": $("[name='_token']").val(),
+                    },
+                    success: function(hasil){
+                        $.ajax({  //lalu masukkan kode barang ke tabel invoice_barang
+                                type: "post",
+                                url: "{{ url('member/invoice/tambah_barang') }}",
+                                data:{
+                                    "_token": $("[name='_token']").val(),
+                                    "kode_keranjang":  kode_keranjang,
+                                    "kode_invoice": hasil
+                                },
+                                success: function(hasil2){
+                                    
+                                },
+                            });
+                            
+                        Swal.fire({
+                            title: 'Invoice Berhasil Dibuat!',
+                            type: "success",
+                            confirmButtonText: "invoice",
+                            animation: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false,
+                            allowOutsideClick: false,
+                            customClass: {
+                                popup: 'animated tada'
+                            }
+                        }).then((result) => {
+                            if(result.value){
+                                window.location.href = "{{ url('member/invoice/bayar/') }}" + "/" + hasil;
+                            }
+                        });
+                    }
+
+                });
+        });
 
         $(".btn-bayar-semua").click(function(){
 
-            // $(".anak-checkbox").each(function(){
-            //     $(this).trigger("click");
-            // });
-
             var kode_invoice = "";
             
-            $.ajax({  //masukkan kode invoice d dahulu
+            if($(".anak-checkbox").is(":checked") == false){
+
+            Swal.fire({
+                title: 'Belum memilih',
+                html: "Anda harus memilih minimal satu keranjang",
+                type: "error",
+                animation: false,
+                customClass: {
+                    popup: 'animated shake'
+                }
+            })
+            }else{
+                $.ajax({  //masukkan kode invoice d dahulu
+                    
                     type: "post",
                     url: "{{ url('member/invoice') }}",
                     data:{
@@ -633,7 +887,7 @@ input[type=number]
                     }
 
                 });
-
+            }
         });
 
         function masukkan_data(hasil){
@@ -693,152 +947,8 @@ input[type=number]
             // }
 
         });
+            
 
-            $(".form-daftar").hide();
-
-            $(".btn-daftar-slide").click(function(){
-                $(".form-login").hide("slow");
-                $(".form-daftar").show("slow");
-                $(".modal-title-login").text("Daftar");
-            });
-
-            $(".btn-login-slide").click(function(){
-                $(".form-daftar").hide("slow");
-                $(".form-login").show("slow");
-                $(".modal-title-login").text("Login");
-            });
-
-            // $(".btn-daftar").click(function(){
-
-            // });
-
-            $(".btn-login").click(function(){
-                var email = $("[name='email-login']").val();
-                var password = $("[name='password-login']").val();
-
-                if(email == ""){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom email harus diisi!',
-                        'error'
-                    )
-                }else if(password == ""){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom password harus diisi!',
-                        'error'
-                    )
-                }else{
-                    $.ajax({
-                        type:"post",
-                        url: "{{ url('member/login') }}",
-                        data: {
-                            "_token": $("[name='_token']").val(),
-                            email: email,
-                            password: password
-                        },
-                        error: function(error){
-                            if(error.responseJSON.errors.email[0] === "These credentials do not match our records."){
-                                Swal.fire({
-                                    title: 'Data tidak ditemukan atau salah',
-                                    html: "Email atu password salah.",
-                                    type: "error",
-                                    animation: false,
-                                    customClass: {
-                                        popup: 'animated shake'
-                                    }
-                                })
-                            }
-                        },
-                        success: function(hasil){
-                            location.reload();
-                        }
-                    });
-                }
-            });
-
-            $(".btn-daftar").click(function(){
-                var nama = $("[name='nama-register']").val();
-                var email = $("[name='email-register']").val();
-                var password = $("[name='password-register']").val();
-                var password_confirm = $("[name='password_confirmation']").val();
-
-                if(nama == ''){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom nama harus diisi!',
-                        'error'
-                    )
-                }else if(nama.length < 6){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom nama minimal 6 huruf',
-                        'error'
-                    )
-                }else if(email == ""){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom email harus diisi!',
-                        'error'
-                    )
-                }else if(password == ""){
-                    Swal.fire(
-                        'GAGAL',
-                        'Kolom password harus diisi!',
-                        'error'
-                    )
-                }else if(password.length < 6){
-                    Swal.fire(
-                        'GAGAL',
-                        'Password minimal 6 karakter',
-                        'error'
-                    )
-                }else if(password_confirm == ""){
-                    Swal.fire(
-                        'GAGAL',
-                        'Harap isi konfirmasi password!',
-                        'error'
-                    )
-                }else if(password != password_confirm){
-                    Swal.fire(
-                        'GAGAL',
-                        'Password tidak sama!',
-                        'error'
-                    )
-                }else{
-                    $.ajax({
-                        type:"post",
-                        url: "{{ url('member/register') }}",
-                        data: {
-                            "_token": $("[name='_token']").val(),
-                            nama: nama,
-                            email: email,
-                            password: password,
-                            password_confirmation: password_confirm
-                        },
-                        error: function(error){
-                            if(error.responseJSON.errors.email[0] === "The email has already been taken."){
-                                Swal.fire({
-                                    title: 'Email telah terdaftar',
-                                    html: "Email <span class='text-danger font-weight-bold'>" + email + "</span> telah terdaftar, silahkan pilih login.",
-                                    type: "error",
-                                    animation: false,
-                                    customClass: {
-                                        popup: 'animated shake'
-                                    }
-                                })
-
-                                $("[name='email-register']").addClass("is-invalid");
-                            }
-                        },
-                        success: function(hasil){
-                            
-                            location.reload();
-                        }
-                    });
-                }
-
-            });
 
         });
 
@@ -861,51 +971,210 @@ input[type=number]
                         item_keranjang.hide();
                         $(".btn-keluarkan-" + barang).hide();
                         $(".btn-tambah-keranjang-" + barang).show();
-                        $(".angka-keranjang").text(parseInt(keranjang) - 1);
                         $(".keranjang-container").html("");
 
-                        for(var i = 0; i < hasil.length; i++){
-                            var counter = i + 1;
-                            $(".keranjang-container").append(
-                                "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
-                                    "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] +  "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
-                                    "<td scope='row'>" + counter + "</td>" +
-                                    "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
-                                    "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] +  "</td>" +
-                                    "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] +  "</td>" +
-                                    "<td>" +
-                                        "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly>" + hasil[i]['jumlah'] + "</div>" +
-                                        "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
-                                    "</td>" +
-                                    "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
-                                    "<td>" + hasil[i]['total'] + "</td>" +
-                                    "<td>" + 
-                                        "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
-                                        "<button class='btn btn-success btn-bayar-keranjang' data-kode='{{ $k->kode_keranjang }}'> bayar</button>" +
-                                    "</td>" +
-                                "</tr>"
-                            );
+                        
+                        $(".angka-keranjang").text("");
+                        $(".angka-keranjang").text(hasil.length);
+
+                        
+                        if(hasil.length == 0){
+                            $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
+                        }else{
+                            for(var i = 0; i < hasil.length; i++){
+                                var counter = i + 1;
+                                $(".keranjang-container").append(
+                                    
+                                    "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
+                                        "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
+                                        "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
+                                        "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
+                                        "<td>" +
+                                            "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
+                                            "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+                                        "</td>" +
+                                        "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+                                        "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
+                                        "<td>" +
+                                            "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+                                            "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
+                                        "</td>" +
+                                    "</tr>"
+                                );
+                            }
                         }
                     }
                 });
             });
+            
     </script>
+    
+    @else
+    <script>
+                    $(".form-daftar").hide();
+
+$(".btn-daftar-slide").click(function(){
+    $(".form-login").hide("slow");
+    $(".form-daftar").show("slow");
+    $(".modal-title-login").text("Daftar");
+});
+
+$(".btn-login-slide").click(function(){
+    $(".form-daftar").hide("slow");
+    $(".form-login").show("slow");
+    $(".modal-title-login").text("Login");
+});
+
+// $(".btn-daftar").click(function(){
+
+// });
+
+$(".btn-login").click(function(){
+    var email = $("[name='email-login']").val();
+    var password = $("[name='password-login']").val();
+
+    if(email == ""){
+        Swal.fire(
+            'GAGAL',
+            'Kolom email harus diisi!',
+            'error'
+        )
+    }else if(password == ""){
+        Swal.fire(
+            'GAGAL',
+            'Kolom password harus diisi!',
+            'error'
+        )
+    }else{
+        $.ajax({
+            type:"post",
+            url: "{{ url('member/login') }}",
+            data: {
+                "_token": $("[name='_token']").val(),
+                email: email,
+                password: password
+            },
+            error: function(error){
+                if(error.responseJSON.errors.email[0] === "These credentials do not match our records."){
+                    Swal.fire({
+                        title: 'Data tidak ditemukan atau salah',
+                        html: "Email atu password salah.",
+                        type: "error",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
+                }
+            },
+            success: function(hasil){
+                location.reload();
+            }
+        });
+    }
+});
+
+$(".btn-daftar").click(function(){
+    var nama = $("[name='nama-register']").val();
+    var email = $("[name='email-register']").val();
+    var password = $("[name='password-register']").val();
+    var password_confirm = $("[name='password_confirmation']").val();
+
+    if(nama == ''){
+        Swal.fire(
+            'GAGAL',
+            'Kolom nama harus diisi!',
+            'error'
+        )
+    }else if(nama.length < 6){
+        Swal.fire(
+            'GAGAL',
+            'Kolom nama minimal 6 huruf',
+            'error'
+        )
+    }else if(email == ""){
+        Swal.fire(
+            'GAGAL',
+            'Kolom email harus diisi!',
+            'error'
+        )
+    }else if(password == ""){
+        Swal.fire(
+            'GAGAL',
+            'Kolom password harus diisi!',
+            'error'
+        )
+    }else if(password.length < 6){
+        Swal.fire(
+            'GAGAL',
+            'Password minimal 6 karakter',
+            'error'
+        )
+    }else if(password_confirm == ""){
+        Swal.fire(
+            'GAGAL',
+            'Harap isi konfirmasi password!',
+            'error'
+        )
+    }else if(password != password_confirm){
+        Swal.fire(
+            'GAGAL',
+            'Password tidak sama!',
+            'error'
+        )
+    }else{
+        $.ajax({
+            type:"post",
+            url: "{{ url('member/register') }}",
+            data: {
+                "_token": $("[name='_token']").val(),
+                nama: nama,
+                email: email,
+                password: password,
+                password_confirmation: password_confirm
+            },
+            error: function(error){
+                if(error.responseJSON.errors.email[0] === "The email has already been taken."){
+                    Swal.fire({
+                        title: 'Email telah terdaftar',
+                        html: "Email <span class='text-danger font-weight-bold'>" + email + "</span> telah terdaftar, silahkan pilih login.",
+                        type: "error",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
+
+                    $("[name='email-register']").addClass("is-invalid");
+                }
+            },
+            success: function(hasil){
+                
+                location.reload();
+            }
+        });
+    }
+
+});
+    </script>
+    @endif
+    
+    @if (Session::has('invoice_hapus'))
+        <script>
+            Swal.fire({
+                title: 'Terhapus',
+                html: "Invoice telah terhapus",
+                type: "success",
+                animation: false,
+                customClass: {
+                    popup: 'animated tada'
+                }
+            })
+        </script>
+    @endif
     </body>
     
     </html>
     
-    
-                    {{-- <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-    
-                        You are logged in!
-                    </div> --}}
-                {{-- </div>
-            </div>
-        </div>
-    </div>
-     --}}
