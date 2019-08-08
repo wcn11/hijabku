@@ -25,14 +25,14 @@
 
         <!-- Slider -->
     
-        <div class="main_slider carousel-awal" style="background-image:url({{ asset('images/slider_1.jpg') }})">
+        <div class="main_slider carousel-awal img-fluid" style="background-image:url('https://cdn.cnn.com/cnnnext/dam/assets/160108114312-dolce-gabbana-hijab-collection-super-tease.jpg')">
             <div class="container fill_height">
                 <div class="row align-items-center fill_height">
                     <div class="col">
                         <div class="main_slider_content">
-                            <h6>Spring / Summer Collection 2017</h6>
-                            <h1>Get up to 30% Off New Arrivals</h1>
-                            <div class="red_button shop_now_button"><a href="#">belanja sekarang</a></div>
+                            <h6>Koleksi Terbaru 2019</h6>
+                            <h1 class="text-white">Bahan Berkualitas & Terbaik</h1>
+                            <div class="red_button shop_now_button "><a href="javascript:void(0)" class="belanja">belanja sekarang</a></div>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
     
         <!-- Banner -->
     
-        <div class="banner">
+        {{-- <div class="banner">
             <div class="container">
                 <div class="row">
                     @foreach($kategori as $k)
@@ -55,7 +55,7 @@
                     @endforeach
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- New Arrivals -->
     
@@ -96,7 +96,7 @@
                                             <img src="{{ url('images/barang/'.$b->gambar) }}" alt="">
                                         </div>
                                         <div class="favorite favorite_left"></div>
-                                        <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+                                        {{-- <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><sup>Free</sup> <span class="text-white">ongkir</span></div> --}}
                                         <div class="product_info">
                                             <h6 class="product_name"><a href="{{ route('detail_barang', $b->kode_barang) }}">{{ $b->nama_barang }}</a></h6>
                                             <div class="product_price"><sup>Rp</sup>{{ $b->harga_barang }}</div>
@@ -115,7 +115,7 @@
     
         <!-- Deal of the week -->
     
-        <div class="deal_ofthe_week">
+        {{-- <div class="deal_ofthe_week">
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-6">
@@ -151,11 +151,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- Best Sellers -->
     
-        <div class="best_sellers">
+        {{-- <div class="best_sellers">
             <div class="container">
                 <div class="row">
                     <div class="col text-center">
@@ -357,7 +357,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- Benefit -->
     
@@ -406,7 +406,7 @@
     
         <!-- Blogs -->
     
-        <div class="blogs">
+        {{-- <div class="blogs">
             <div class="container">
                 <div class="row">
                     <div class="col text-center">
@@ -448,7 +448,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         {{-- <p data-haha="qwe">hahahahahah</p> --}}
         {{-- <input type="" --}}
@@ -456,9 +456,28 @@
 
 @section('js')
     <script src="{{ asset('js/custom.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $(".belanja").click(function() {
+                $('html, body').animate({
+                    scrollTop: $(".new_arrivals").offset().top
+                }, 1500);
+            });
+            });
+
+            // $(document).ready(function() {
+            // // $(".up").click(function() {
+            // //     $('html, body').animate({
+            // //         scrollTop: $(".down").offset().top
+            // //     }, 1000);
+            // // });
+            // });
+    </script>
     @if(Auth::guard("member")->check())
     <script>
         $(document).ready(function(){
+
+            
 
             $(document).on("click", ".btn-keluarkan" ,function(){
                 var kode = $(this).attr("data-kode");

@@ -1,1 +1,3 @@
-benerin profil if else dan buat formnya
+ganti password member
+verifikasi email password member
+lupa password member

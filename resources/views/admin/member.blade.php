@@ -2,15 +2,18 @@
 
 @section('content')
     <div class="container-fluid">
+            <h1 class="text-center">Daftar Member</h1>
+            <hr>
         <div class="row p-2">
 
             <div class="table-responsive">
 
-                <table class="table table-borderless  table-hover tabel-member">
+                <table class="table nowrap table-borderless table-hover tabel-member">
                     <thead>
                         <tr class="text-center">
                             <th>No</th>
                             <th>ID Member</th>
+                            <th>Profil</th>
                             <th>Nama Member</th>
                             <th>Email</th>
                             <th>Aksi</th>
@@ -21,6 +24,10 @@
                             <tr class="text-center">
                                 <td>{{ $m_key + 1 }}</td>
                                 <td>{{ $m->id_member }}</td>
+                                <td class="w-25">
+                                    <div class="gambar">
+                                        <img src="{{ url('images/member/'.$m->profil)}}" class="img-fluid rounded w-50"></td>
+                                    </div>
                                 <td>{{ $m->nama }}</td>
                                 <td>{{ $m->email }}</td>
                                 <td>

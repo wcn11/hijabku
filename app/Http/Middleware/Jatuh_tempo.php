@@ -18,7 +18,7 @@ class Jatuh_tempo
     public function handle($request, Closure $next)
     {
         if(Auth::guard("member")->check()){
-            $member = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->get();
+            $member = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->where("status", "menunggu pembayaran")->get();
 
             foreach($member as $m){
                 $invoice = Invoice::find($m->kode_invoice);

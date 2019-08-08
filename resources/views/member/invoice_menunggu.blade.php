@@ -11,7 +11,7 @@
 
     <div class="text-right p-2">
         {{-- <a class="btn btn-outline-info btn-konfirmasi" href="{{ route('member.print_invoice', $invoice->kode_invoice) }}"><i class="fas fa-print"></i> Print invoice</a> --}}
-        <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a>
+        {{-- <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a> --}}
     </div>
     <div class="text-center">
         <h1>Rincian Invoice</h1>
@@ -47,7 +47,7 @@
                                 </select> --}}
                                 <div class="container">
                                     <div class="p-2">
-                                        <table class="table table-bordered">
+                                        <table class="table nowrap table-bordered">
                                             <thead>
                                                 <tr class="text-center">
                                                     <th scope="row">Nama Bank</th>
@@ -87,7 +87,7 @@
                 </div>
     
                 <div class="table-responsive-sm">
-                    <table class="table table-striped">
+                    <table class="table nowrap table-striped">
                         <thead>
                             <tr>
                                 <th class="center">#</th>
@@ -120,7 +120,7 @@
                     </div>
     
                     <div class="col-lg-4 col-sm-5 ml-auto">
-                        <table class="table table-clear">
+                        <table class="table  nowrap table-clear">
                             <tbody>
                                 {{-- <tr>
                                     <td class="left">
@@ -173,6 +173,7 @@
                             <img src="#" class="img-fluid rounded bukti_pembayaran">
                             <form action="{{ route('member.update_bukti') }}" method="POST" class="form-upload" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="kode_invoice" value="{{ $invoice->kode_invoice }}">
                                 <input type="hidden" name="kode_bukti" value="{{ $invoice->invoice_ke_bukti[0]['kode_bukti'] }}">
                                 <input type="file" name="bukti_update" accept="image/*">
                                 <button type="submit" class="btn btn-dark mt-2 btn-upload"><i class="fas fa-upload"></i> update bukti</button>

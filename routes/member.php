@@ -49,5 +49,8 @@ Route::group(['namespace' => 'Member'], function() {
         Route::get("konfirmasi/pembayaran", "HomeController@konfirmasi_pembayaran")->name("member.konfirmasi_pembayaran");
         Route::post("konfirmasi/upload", "HomeController@upload_bukti")->name("member.upload_bukti");
         Route::post("konfirmasi/update/bukti", "HomeController@update_bukti")->name("member.update_bukti");
+
+        Route::post("profil/default", "HomeController@profil_default")->name("member.profil_default");
+        Route::post("profil/baru", "HomeController@profil_baru")->name("member.profil_baru");
     });
 });

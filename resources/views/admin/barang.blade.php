@@ -12,6 +12,8 @@
 @section('content')
     
     <div class="container-fluid">
+            <h1 class="text-center">Daftar Barang</h1>
+            <hr>
         <div class="row container">
 
             <div class="wrapper">
@@ -21,7 +23,7 @@
 
         <div class="container">
             <div class="table-responsive">
-                <table class="table table-hover table-borderless tabel-barang">
+                <table class="table nowrap table-hover table-borderless tabel-barang">
                     <thead>
                         <tr class="text-center">
                             <th>No</th>

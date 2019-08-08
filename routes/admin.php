@@ -38,6 +38,12 @@ Route::group(['namespace' => 'Admin'], function() {
         Route::get("member", "MemberController@index")->name("admin.member");
         Route::post("member/hapus/{id_member}", "MemberController@hapus_member")->name("admin.hapus_member");
 
+        Route::get("konfirmasi", "HomeController@konfirmasi")->name("admin.konfirmasi");
+        Route::get("konfirmasi/tolak/{kode_invoice}", "HomeController@tolak_konfirmasi")->name("admin.tolak_konfirmasi");
+        Route::get("konfirmasi/terima/{kode_invoice}", "HomeController@terima_konfirmasi")->name("admin.terima_konfirmasi");
+        
+        Route::get("laporan", "HomeController@laporan")->name("admin.laporan");
+
     });
 
 });

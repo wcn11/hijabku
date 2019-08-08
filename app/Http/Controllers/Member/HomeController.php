@@ -100,7 +100,7 @@ class HomeController extends Controller
     }
 
     public function data_history(){
-        $history = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->where("status", "lunas")->get();
+        $history = Invoice::where("id_member", Auth::guard("member")->user()->id_member)->where("status", "terkonfirmasi")->get();
 
         return response()->json($history);
     }
@@ -180,12 +180,12 @@ class HomeController extends Controller
 
         $tanggal = date("Y-m-d H:i:s");
 
-        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 2);
+        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 3);
 
         $tanggal_pengganti = substr($tanggal, strrpos($tanggal, "-") + 1, 2) + 7;
         
-        $jatuh_tempo = str_replace_last($tanggal_sekarang, $tanggal_pengganti, $tanggal);
-        
+        $jatuh_tempo = str_replace($tanggal_sekarang, $tanggal_pengganti." ", $tanggal);
+
         $id_member = Member::max("id_member");
 
         $id_member_slash = strrpos($id_member, "-");
@@ -242,6 +242,14 @@ class HomeController extends Controller
 
         $ib->save();
 
+        $barang = Barang::find($kode_keranjang->kode_barang);
+
+        $stok_barang = $barang->stok;
+
+        $barang->stok = $stok_barang - 1;
+
+        $barang->update();
+
         $kode_keranjang->delete();
 
         return response()->json($request->kode_keranjang);
@@ -267,11 +275,11 @@ class HomeController extends Controller
 
         $tanggal = date("Y-m-d H:i:s");
 
-        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 2);
+        $tanggal_sekarang = substr($tanggal, strrpos($tanggal, "-") + 1, 3);
 
         $tanggal_pengganti = substr($tanggal, strrpos($tanggal, "-") + 1, 2) + 7;
         
-        $jatuh_tempo = str_replace_last($tanggal_sekarang, $tanggal_pengganti, $tanggal);
+        $jatuh_tempo = str_replace($tanggal_sekarang, $tanggal_pengganti." ", $tanggal);
 
         $invoice = Invoice::find($kode_invoice);
 
@@ -374,14 +382,15 @@ class HomeController extends Controller
 
                 $bukti->tanggal_upload = now();
 
-                $bukti->status = "mengunggu konfirmasi";
+                // $bukti->status = "menunggu konfirmasi";
 
                 $bukti->save();
 
                 $invoice = Invoice::find($request->kode_invoice);
 
-                $invoice->status = "mengunggu konfirmasi";
+                $invoice->status = "menunggu konfirmasi";
 
+                $invoice->update();
 
                 Session::flash("invoice_berhasil", "berhasil");
 
@@ -436,6 +445,12 @@ class HomeController extends Controller
 
         $bukti->update();
 
+        $invoice = Invoice::find($request->kode_invoice);
+
+        $invoice->status = "menunggu konfirmasi";
+
+        $invoice->update();
+
         Session::flash("update_bukti", "berhasil");
 
         return redirect()->back();
@@ -457,5 +472,68 @@ class HomeController extends Controller
         $bank = Bank::all();
 
         return view("member.invoice_history", compact("invoice", "bank", "member", "invoice_sum", "bukti"));
+    }
+
+    public function profil_default(Request $r){
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $member->nama = $r->nama;
+
+        $member->email = $r->email;
+
+        $member->alamat = $r->alamat;
+
+        $member->telepon = $r->telepon;
+
+        if($r->has("pp")){
+            $pp = $r->file("pp");
+                    
+            $tujuan_upload = 'images/member/';
+    
+            $nama_file = time()."-".$pp->getClientOriginalName();
+            
+            $pp->move($tujuan_upload, $nama_file);
+    
+            $member->profil = $nama_file;
+        }
+
+        $member->update();
+
+        Session::flash("update_profil", "berhasil");
+
+        return redirect()->back();
+    }
+
+    public function profil_baru(Request $r){
+        $member = Member::find(Auth::guard("member")->user()->id_member);
+
+        $member->nama = $r->nama;
+
+        $member->email = $r->email;
+
+        $member->alamat = $r->alamat;
+
+        $member->telepon = $r->telepon;
+
+        if($r->has("pp")){
+            
+            File::delete("images/member/".$member->profil);
+
+            $pp = $r->file("pp");
+                    
+            $tujuan_upload = 'images/member/';
+    
+            $nama_file = time()."-".$pp->getClientOriginalName();
+            
+            $pp->move($tujuan_upload, $nama_file);
+    
+            $member->profil = $nama_file;
+        }
+
+        $member->update();
+
+        Session::flash("update_profil", "berhasil");
+
+        return redirect()->back();
     }
 }

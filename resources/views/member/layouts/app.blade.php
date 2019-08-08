@@ -89,6 +89,12 @@ input[type=number]
   bottom: -1px;
   height: 50%;
 }
+.pp:hover{
+    cursor: pointer;
+}
+.angka-keranjang{
+    top: 17% !important;
+}
     </style>
     
     @yield('css')
@@ -99,61 +105,6 @@ input[type=number]
         <!-- Header -->
     
         <header class="header trans_300">
-    
-            <!-- Top Navigation -->
-    
-            {{-- <div class="top_nav">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="top_nav_left">free shipping on all u.s orders over $50</div>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <div class="top_nav_right">
-                                <ul class="top_nav_menu">
-    
-                                    <!-- Currency / Language / My Account -->
-    
-                                    <li class="currency">
-                                        <a href="#">
-                                            usd
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="currency_selection">
-                                            <li><a href="#">cad</a></li>
-                                            <li><a href="#">aud</a></li>
-                                            <li><a href="#">eur</a></li>
-                                            <li><a href="#">gbp</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="language">
-                                        <a href="#">
-                                            English
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="language_selection">
-                                            <li><a href="#">French</a></li>
-                                            <li><a href="#">Italian</a></li>
-                                            <li><a href="#">German</a></li>
-                                            <li><a href="#">Spanish</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="account">
-                                        <a href="#">
-                                            My Account
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="account_selection">
-                                            <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a></li>
-                                            <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
     
             <!-- Main Navigation -->
     
@@ -166,17 +117,13 @@ input[type=number]
                             </div>
                             <nav class="navbar">
                                 <ul class="navbar_menu">
-                                    <li><a href="#">home</a></li>
+                                    {{-- <li><a href="#">home</a></li>
                                     <li><a href="#">shop</a></li>
                                     <li><a href="#">promotion</a></li>
                                     <li><a href="#">pages</a></li>
                                     <li><a href="#">blog</a></li>
-                                    <li><a href="contact.html">contact</a></li>
-                                </ul>
-                                <ul class="navbar_user">
-
-
-                                @if(Auth::guard("member")->check())    
+                                    <li><a href="contact.html">contact</a></li> --}}
+                                    @if(Auth::guard("member")->check())    
                                     <li class="checkout">
                                         <a href="javascript:void(0)" data-target=".modal-keranjang" class="trigger-keranjang" data-toggle="modal">
                                             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
@@ -184,13 +131,23 @@ input[type=number]
                                         </a>
                                     </li>
                                 @endif
+                                </ul>
+                                <ul class="navbar_user">
+
+
+                                {{-- @if(Auth::guard("member")->check())    
+                                    <li class="checkout">
+                                        <a href="javascript:void(0)" data-target=".modal-keranjang" class="trigger-keranjang" data-toggle="modal">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                            <span id="checkout_items" class="checkout_items angka-keranjang"></span>
+                                        </a>
+                                    </li>
+                                @endif --}}
 
                                     <li>
-                                        @if (Auth::guard('member')->guest())
-                                            <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
-                                        @else
-                                            {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
-                                            <div class="btn-group dropdown">
+                                        @if (Auth::guard('member')->check())
+                                        {{-- <a href="#modal-login" data-toggle="modal"><i class="fa fa-sign-in" aria-hidden="true"></i> {{ Auth::guard('member')->user()->nama }}</a> --}}
+                                        <div class="btn-group dropdown">
                                                 <a href="javascript:void(0)" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     {{ Auth::guard("member")->user()->nama }}
                                                 </a>
@@ -198,11 +155,13 @@ input[type=number]
                                                     <button type="button" class="btn btn-block btn-invoice"><i class="fa fa-sign-out-alt"></i> invoice</button>
                                                     <button type="button" class="btn btn-block" data-toggle="modal" data-target=".modal-profil"><i class="fa fa-sign-out-alt"></i> profil</button>
                                                     <form action="{{ route('member.logout') }}" method="POST">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
-                                                    </form>
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-block"><i class="fa fa-sign-out-alt"></i> logout</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                                </div>
+                                        @else
+                                            <a href="#modal-login" data-toggle="modal"><i class="fas fa-sign-in-alt"></i> Login</a>
                                         @endif
                                     </li>
                                 </ul>
@@ -221,7 +180,9 @@ input[type=number]
             <div class=" modal-dialog modal-dialog-center modal-dialog-lg">
                 <div class="modal-content">
                     <div class="modal-header justify-content-center" style="background-color:#fe4c50;">
-                        <h2 class=" modal-title-login text-white">Login</h2>
+                        <div class="justify-content-center">
+                            <h2 class=" modal-title-login text-white">Login</h2>
+                        </div>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
@@ -250,11 +211,11 @@ input[type=number]
 
                             </div>
                             <div class="form-group text-center">
-                                <button type="submit" class="btn btn-dark btn-login"><i class="fas fa-sign-in"></i> Login</button>
+                                <button type="submit" class="btn btn-dark btn-login"><i class="fas fa-sign-in-alt"></i> Login</button>
                             </div>
                             <hr>
                             <div class="form-group text-center">
-                                <button type="button" class="btn btn-dark btn-daftar-slide"><i class="fas fa-sign-up"></i> Daftar</button>
+                                <button type="button" class="btn btn-dark btn-daftar-slide"><i class="fas fa-user-plus"></i> Daftar</button>
                             </div>
                         </div>
 
@@ -306,11 +267,11 @@ input[type=number]
                                 </div>
 
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-dark btn-daftar"><i class="fas fa-sign-up"></i> Daftar</button>
+                                    <button type="button" class="btn btn-dark btn-daftar"><i class="fas fa-user-plus"></i> Daftar</button>
                                 </div>
                                 <hr>
                                 <div class="form-group text-center">
-                                    <button type="button" class="btn btn-dark btn-login-slide"><i class="fas fa-sign-up"></i> Login</button>
+                                    <button type="button" class="btn btn-dark btn-login-slide"><i class="fas fa-sign-in-alt"></i> Login</button>
                                 </div>
                             </form>
                     </div>
@@ -323,7 +284,15 @@ input[type=number]
             <div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
             <div class="hamburger_menu_content text-right">
                 <ul class="menu_top_nav">
-                    <li class="menu_item has-children">
+                    @if(Auth::guard("member")->check())    
+                        <li class="menu_item ">
+                            <a href="javascript:void(0)" data-target=".modal-keranjang" class="trigger-keranjang" data-toggle="modal">
+                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                <span id="checkout_items" class="checkout_items angka-keranjang"></span>
+                            </a>
+                        </li>
+                    @endif
+                    {{-- <li class="menu_item has-children">
                         <a href="#">
                             usd
                             <i class="fa fa-angle-down"></i>
@@ -362,7 +331,7 @@ input[type=number]
                     <li class="menu_item"><a href="#">promotion</a></li>
                     <li class="menu_item"><a href="#">pages</a></li>
                     <li class="menu_item"><a href="#">blog</a></li>
-                    <li class="menu_item"><a href="#">contact</a></li>
+                    <li class="menu_item"><a href="#">contact</a></li> --}}
                 </ul>
             </div>
         </div>
@@ -375,7 +344,7 @@ input[type=number]
     
         <!-- Newsletter -->
     
-        <div class="newsletter">
+        {{-- <div class="newsletter">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
@@ -394,11 +363,11 @@ input[type=number]
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- Footer -->
     
-        <footer class="footer">
+        <footer class="footer mt-3" style="background-color: #e1e1e1;">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
@@ -410,7 +379,7 @@ input[type=number]
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    {{-- <div class="col-lg-6">
                         <div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
                             <ul>
                                 <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
@@ -420,12 +389,12 @@ input[type=number]
                                 <li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
                             </ul>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="footer_nav_container">
-                            <div class="cr">©2018 All Rights Reserverd. This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">Colorlib</a></div>
+                            <div class="cr">©2019 Hijabku.com All Rights Reserverd.</div>
                         </div>
                     </div>
                 </div>
@@ -445,7 +414,7 @@ input[type=number]
                     </div>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-border">
+                    <table class="table nowrap table-border">
                         <thead>
                             <tr class="text-center">
                                 <th><input type="checkbox" class="kepala-checkbox"></th>
@@ -479,7 +448,7 @@ input[type=number]
                 <div class="modal-body">
                     <div class="table-responsive">
                         
-                        <table class="table ">
+                        <table class="table  nowrap table-borderless">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -522,45 +491,78 @@ input[type=number]
                             <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 @if(Auth::guard('member')->check())
                                     @if(Auth::guard('member')->user()->profil == "default_member.png")
-                                        <form class="p-3">
+                                    <form class="p-3 form-default" action="{{ route('member.profil_default') }}" method="post" enctype="multipart/form-data">
+                                        @csrf
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="nama">Nama <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" id="nama" placeholder="Masukkan nama anda" value="{{ Auth::guard('member')->user()->nama }}">
+                                                        <input type="text" class="form-control" name="nama" id="nama" placeholder="Masukkan nama anda" value="{{ Auth::guard('member')->user()->nama }}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="email">Email <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" id="email" placeholder="Masukkan email anda" value="{{ Auth::guard('member')->user()->email }}">
+                                                        <input type="text" class="form-control" name="email" id="email" placeholder="Masukkan email anda" value="{{ Auth::guard('member')->user()->email }}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="alamat">Alamat</label>
-                                                        <input type="text" class="form-control" id="alamat" placeholder="Masukkan alamat anda" value="{{ Auth::guard('member')->user()->alamat }}">
+                                                        <input type="text" class="form-control" name="alamat" id="alamat" placeholder="Masukkan alamat anda" value="{{ Auth::guard('member')->user()->alamat }}">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="telepon">Telepon</label>
-                                                        <input type="text" class="form-control" id="telepon" placeholder="Masukkan telepon anda" value="{{ Auth::guard('member')->user()->telepon }}">
+                                                        <input type="text" class="form-control" name="telepon"  id="telepon" placeholder="Masukkan telepon anda" value="{{ Auth::guard('member')->user()->telepon }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
                                                     <div>
                                                         <p>Foto Profil:</p>
-                                                        <img src="{{ url('images/member/'.Auth::guard('member')->user()->profil) }}" class="img-fluid rounded">
-                                                        
-                                                        <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button>
+                                                        <small class="text-warning">Klik gambar untuk mengubah foto</small>
+                                                        <img src="{{ url('images/member/'.Auth::guard('member')->user()->profil) }}" class="img-fluid rounded pp">
+                                                        <input type="file" accept="image/*" name="pp">
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <button type="button" class="btn btn-primary btn-default">Update</button>
                                         </form>
-                                    {{-- @else --}}
+                                    @else
+                                    <form class="p-3 form-baru" action="{{ route('member.profil_baru') }}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="nama">Nama <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" name="nama" id="nama_baru" placeholder="Masukkan nama anda" value="{{ Auth::guard('member')->user()->nama }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="email">Email <span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" name="email" id="email_baru" placeholder="Masukkan email anda" value="{{ Auth::guard('member')->user()->email }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="alamat">Alamat</label>
+                                                        <input type="text" class="form-control" name="alamat" id="alamat_baru" placeholder="Masukkan alamat anda" value="{{ Auth::guard('member')->user()->alamat }}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="telepon">Telepon</label>
+                                                        <input type="text" class="form-control" name="telepon"  id="telepon_baru" placeholder="Masukkan telepon anda" value="{{ Auth::guard('member')->user()->telepon }}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div>
+                                                        <p>Foto Profil:</p>
+                                                        <small class="text-warning">Klik gambar untuk mengubah foto</small>
+                                                        <img src="{{ url('images/member/'.Auth::guard('member')->user()->profil) }}" class="img-fluid rounded pp">
+                                                        <input type="file" accept="image/*" name="pp">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-baru">Update</button>
+                                        </form>
                                     @endif
                                 @endif
                             </div>
 
                             {{-- tab history --}}
                             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <table class="table">
+                                <table class="table  nowrap table-borderless">
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
@@ -606,6 +608,83 @@ input[type=number]
             history();
 
             $("[name='pp']").hide();
+            $(".pp").click(function(){
+                $("[name='pp']").trigger("click");
+            });
+
+        $("[name='pp']").on("change", function(){
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                $('.pp').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $(".btn-baru").click(function(){
+            var nama = $("#nama_baru").val();
+            var email = $("#email_baru").val();
+
+            if(nama == ''){
+                Swal.fire({
+                    title: 'Nama kosong',
+                    html: "Kolom nama tidak boleh kosong",
+                    type: "error",
+                    animation: false,
+                    customClass: {
+                        popup: 'animated shake'
+                    }
+                })
+            }else if(email == ''){
+                Swal.fire({
+                    title: 'Email kosong',
+                    html: "Kolom email tidak boleh kosong",
+                    type: "error",
+                    animation: false,
+                    customClass: {
+                        popup: 'animated shake'
+                    }
+                })
+            }else{
+                $(".form-baru").submit();
+            }
+        });
+
+        $(".btn-default").click(function(){
+            var nama = $("#nama").val();
+            var email = $("#email").val();
+
+            if(nama == ''){
+                Swal.fire({
+                    title: 'Nama kosong',
+                    html: "Kolom nama tidak boleh kosong",
+                    type: "error",
+                    animation: false,
+                    customClass: {
+                        popup: 'animated shake'
+                    }
+                })
+            }else if(email == ''){
+                Swal.fire({
+                    title: 'Email kosong',
+                    html: "Kolom email tidak boleh kosong",
+                    type: "error",
+                    animation: false,
+                    customClass: {
+                        popup: 'animated shake'
+                    }
+                })
+            }else{
+                $(".form-default").submit();
+            }
+        });
 
             function history(){
                 $.ajax({
@@ -619,6 +698,7 @@ input[type=number]
                         if(hasil.length > 0){
 
                             for(var i = 0; i < hasil.length; i++){
+                                var route = "member/invoice/lihat/bukti/history/" + hasil[i]['kode_invoice'];
                                 var counter = i + 1;
                                 $(".container-history").append(
                                     "<tr>" +
@@ -631,7 +711,7 @@ input[type=number]
                                         "<td>" + hasil[i]['telepon'] + "</td>" +
                                         "<td><span class='badge badge-success'>" + hasil[i]['status'] + "</span></td>" +
                                         "<td>"+
-                                            "<a class='btn btn-info' href=''><i class='fas fa-eye'></i> Lihat</a>" +
+                                            "<a class='btn btn-info' href='" + route + "'><i class='fas fa-eye'></i> Lihat</a>" +
                                         "</td>" +
                                     "</tr>"
                                 );
@@ -672,8 +752,10 @@ input[type=number]
                             // penentuan status 
                             if(hasil[i]['status'] == "jatuh tempo"){
                                 var status = "<span class='badge badge-danger p-2 rounded'>" + hasil[i]['status'] + "</span>";
-                            }else if(hasil[i]['status'] == "lunas"){
+                            }else if(hasil[i]['status'] == "terkonfirmasi"){
                                 var status = "<span class='badge badge-success'>" + hasil[i]['status'] + "</span>";
+                            }else if(hasil[i]['status'] == "ditolak"){
+                                var status = "<span class='badge badge-danger'>" + hasil[i]['status'] + "</span>";
                             }else{
                                 var status = "<span class='badge badge-info'>" + hasil[i]['status'] + "</span>";
                             }   
@@ -682,9 +764,11 @@ input[type=number]
                             if(hasil[i]['status'] == "jatuh tempo"){
                                 var aksi = "<span class='badge badge-danger p-2 rounded'>" + hasil[i]['status'] + "</span>";
                             }else if(hasil[i]['status'] == "menunggu pembayaran"){
-                                var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-secondary' href='" + bukti + "'><i class='fas fa-eye'></i> lihat bukti</a>" + "<a class='btn btn-info' href='{{ route('member.konfirmasi_pembayaran') }}'><i class='fas fa-eye'></i> konfirmasi pembayaran</>";
+                                var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-info' href='{{ route('member.konfirmasi_pembayaran') }}'><i class='fas fa-eye'></i> konfirmasi pembayaran</>";
                             }else if(hasil[i]['status'] == "belum dibuat"){
                                 var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-info' href='" + route_selesaikan + "'><i class='fas fa-eye'></i> selesaikan</a>";
+                            }else if(hasil[i]['status'] == "ditolak"){
+                                var aksi = "<a class='btn btn-danger' href='" + route_hapus + "'><i class='fas fa-trash'></i> hapus</a>" + "<a class='btn btn-info' href='" + bukti + "'><i class='fas fa-eye'></i> Ubah Bukti</a>";
                             }else{
                                 var aksi = "<a class='btn btn-success' href='" + invoice_selesai + "'><span class='fas fa-eye'> lihat</span></a>";
                             }
@@ -800,7 +884,7 @@ input[type=number]
                                     "kode_invoice": hasil
                                 },
                                 success: function(hasil2){
-                                    
+                                    console.log(hasil2);
                                 },
                             });
                             
@@ -1166,6 +1250,20 @@ $(".btn-daftar").click(function(){
             Swal.fire({
                 title: 'Terhapus',
                 html: "Invoice telah terhapus",
+                type: "success",
+                animation: false,
+                customClass: {
+                    popup: 'animated tada'
+                }
+            })
+        </script>
+    @endif
+    
+    @if (Session::has('update_profil'))
+        <script>
+            Swal.fire({
+                title: 'Berhasil update',
+                html: "Data diri anda berhasil diupdate",
                 type: "success",
                 animation: false,
                 customClass: {

@@ -14,13 +14,13 @@
         {{-- <a class="btn btn-outline-success" href="{{ route('member.konfirmasi_pembayaran') }}"><i class="fas fa-cash-register"></i> Konfirmasi Pembayaran</a> --}}
     </div>
     <div class="text-center">
-        <h1>Rincian Invoice</h1>
+        <h1>Bukti Invoice</h1>
     </div>
     <div class="card">
             <div class="card-header">
                 Invoice
                 <strong>#{{ $invoice->kode_invoice }}</strong>
-                <span class="float-right"> <strong>Status:</strong> <span class="text-warning">{{ $invoice->status }}</span></span>
+                <span class="float-right"> <strong>Status:</strong> <span class="badge badge-success">{{ $invoice->status }}</span></span>
     
             </div>
             <div class="card-body">
@@ -146,7 +146,7 @@
                         <div>
                             <p>Bukti pembayaran:</p>
                             <img src="{{ url('images/bukti/'.$invoice->invoice_ke_bukti[0]['bukti']) }}" class="img-fluid rounded">
-                            <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button>
+                            {{-- <button class="btn btn-warning mt-2 btn-edit"><i class="fas fa-edit"></i> edit bukti</button> --}}
                         </div>
                     </div>
                 </div>

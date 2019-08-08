@@ -2,12 +2,14 @@
 
 @section('content')
     <div class="container-fluid">
+            <h1 class="text-center">Daftar Kategori</h1>
+            <hr>
         <div class="row p-2">
 
             <button class="btn btn-dark" data-target=".modal-tambah" data-toggle="modal"><i class="fa fa-plus"></i> Tambah</button>
 
             <div class="table-responsive p-2">
-                <table class="table table-border table-hover tabel-kategori">
+                <table class="table nowrap table-border table-hover tabel-kategori">
                     <thead>
                         <tr class="text-center">
                             <th>Kode Kategori</th>

@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>SB Admin 2 - Dashboard</title>
+  <title>Admin - Hijabku</title>
 
   <!-- Custom fonts for this template-->
   <link href="{{ asset('be/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -21,6 +21,11 @@
   <link rel="stylesheet" href="{{ asset('datatable/DataTables-1.10.18/css/dataTables.bootstrap4.min.css') }}">
 </head>
     @yield('css')
+    <style>
+    #accordionSidebar{
+      background-image: linear-gradient(180deg, #ff7359 10%, #ac4813 100%) !important;
+    }
+    </style>
 <body id="page-top">
 
   <!-- Page Wrapper -->
@@ -32,9 +37,9 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+          <i class="fas fa-user-nurse"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+        <div class="sidebar-brand-text mx-3">Admin <sup>Hijabku</sup></div>
       </a>
 
       <!-- Divider -->
@@ -43,7 +48,7 @@
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
         <a class="nav-link" href="/admin">
-          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <i class="fas fa-home"></i>
           <span>Dashboard</span></a>
       </li>
 
@@ -118,22 +123,35 @@
       <!-- Nav Item - Charts -->
       <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.member') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-users"></i>
             <span>Member</span></a>
         </li>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.barang') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-snapchat-ghost"></i>
             <span>Barang</span></a>
+          </li>
+  
+        <!-- Nav Item - Tables -->
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.kategori') }}">
+            <i class="fas fa-list-alt"></i>
+            <span>Kategori</span></a>
         </li>
+      </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.kategori') }}">
+          <a class="nav-link" href="{{ route('admin.konfirmasi') }}">
           <i class="fas fa-fw fa-table"></i>
-          <span>Kategori</span></a>
+          <span>Konfirmasi Invoice</span></a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{ route('admin.laporan') }}">
+          <i class="fas fa-folder-open"></i>
+          <span>Laporan Penjualan</span></a>
       </li>
 
       <!-- Divider -->
@@ -173,7 +191,7 @@
                 
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::guard('admin')->user()->username }}</span>
-                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                <img class="img-profile rounded-circle" src="data:image/png;base64,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">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">

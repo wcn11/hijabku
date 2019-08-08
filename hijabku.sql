@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2019 at 01:53 AM
+-- Generation Time: Aug 08, 2019 at 07:48 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -84,9 +84,9 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`kode_barang`, `kode_kategori`, `nama_barang`, `stok`, `keterangan`, `gambar`, `harga_barang`, `dibuat`, `diupdate`) VALUES
-('BRG-1-1', 'KTG-1', 'Ciput 1', 12, 'engga tau', '1565082149-student.jpg', 10000, '2019-08-06 09:02:29', '2019-08-06 02:02:29'),
-('BRG-1-2', 'KTG-2', 'ciput 2', 13, 'engga ada', '1565082072-ciput rajut.jpg', 12000, '2019-08-06 09:01:24', '2019-08-06 02:01:24'),
-('BRG-3-3', 'KTG-3', 'ciput 3', 12, 'weaef', '1565082109-ciput brokat.jpg', 20000, '2019-08-06 02:01:49', '2019-08-06 02:01:49');
+('BRG-1-1', 'KTG-1', 'Ciput 1', 11, 'engga tau', '1565082149-student.jpg', 10000, '2019-08-08 01:32:07', '2019-08-07 18:32:07'),
+('BRG-1-2', 'KTG-2', 'ciput 2', 7, 'engga ada', '1565082072-ciput rajut.jpg', 12000, '2019-08-08 03:51:38', '2019-08-07 20:51:38'),
+('BRG-3-3', 'KTG-3', 'ciput 3', 7, 'weaef', '1565082109-ciput brokat.jpg', 20000, '2019-08-08 01:49:10', '2019-08-07 18:49:10');
 
 -- --------------------------------------------------------
 
@@ -99,16 +99,17 @@ CREATE TABLE `bukti` (
   `id_member` varchar(30) NOT NULL,
   `kode_invoice` varchar(30) NOT NULL,
   `bukti` varchar(255) NOT NULL,
-  `tanggal_upload` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status` varchar(30) NOT NULL
+  `tanggal_upload` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bukti`
 --
 
-INSERT INTO `bukti` (`kode_bukti`, `id_member`, `kode_invoice`, `bukti`, `tanggal_upload`, `status`) VALUES
-('BKT-4-2-1', 'MBR-1', 'INV-4-2', '1565217827-elearning.jpg', '2019-08-07 22:43:47', 'mengunggu konfirmasi');
+INSERT INTO `bukti` (`kode_bukti`, `id_member`, `kode_invoice`, `bukti`, `tanggal_upload`) VALUES
+('BKT-4-2-1', 'MBR-3', 'INV-4-1', '1565228942-elearning.jpg', '2019-08-07 18:49:02'),
+('BKT-4-3-2', 'MBR-3', 'INV-4-2', '1565238995-wp2529611-16k-wallpapers.jpg', '2019-08-08 04:36:35'),
+('BKT-4-4-3', 'MBR-3', 'INV-4-3', '1565236710-sample 1.jpg', '2019-08-07 20:58:30');
 
 -- --------------------------------------------------------
 
@@ -132,7 +133,9 @@ CREATE TABLE `invoice` (
 --
 
 INSERT INTO `invoice` (`kode_invoice`, `id_member`, `atas_nama`, `alamat_penerima`, `tanggal_invoice`, `jatuh_tempo`, `telepon`, `status`) VALUES
-('INV-4-2', 'MBR-1', 'durika', 'werwerwer', '2019-08-07 21:59:23', '2019-08-14 21:59:23', 'wewer', 'menunggu pembayaran');
+('INV-4-1', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 01:48:33', '2019-08-15 01:48:33', '0908', 'terkonfirmasi'),
+('INV-4-2', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 01:49:19', '2019-08-15 01:49:19', '0908', 'menunggu konfirmasi'),
+('INV-4-3', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 03:52:02', '2019-08-15 03:52:02', '0908', 'menunggu konfirmasi');
 
 -- --------------------------------------------------------
 
@@ -153,9 +156,9 @@ CREATE TABLE `invoice_barang` (
 --
 
 INSERT INTO `invoice_barang` (`kode_invoice_barang`, `kode_invoice`, `kode_barang`, `jumlah`, `total`) VALUES
-('IB-2-1', 'INV-4-1', 'BRG-3-3', 1, 20000),
-('IB-3-3', 'INV-4-2', 'BRG-3-3', 1, 20000),
-('IB-4-2', 'INV-4-3', 'BRG-1-2', 1, 12000);
+('IB-2-1', 'INV-4-1', 'BRG-1-2', 1, 12000),
+('IB-3-2', 'INV-4-2', 'BRG-3-3', 1, 20000),
+('IB-4-3', 'INV-4-3', 'BRG-1-2', 1, 12000);
 
 -- --------------------------------------------------------
 
@@ -193,6 +196,13 @@ CREATE TABLE `keranjang` (
   `tanggal_masuk` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `keranjang`
+--
+
+INSERT INTO `keranjang` (`kode_keranjang`, `kode_barang`, `jumlah`, `id_member`, `total`, `tanggal_masuk`) VALUES
+('KRJG-2-2-1', 'BRG-1-2', 1, 'MBR-1', 12000, '2019-08-08 04:56:02');
+
 -- --------------------------------------------------------
 
 --
@@ -222,7 +232,7 @@ CREATE TABLE `members` (
   `profil` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default_member.png',
   `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alamat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `telepon` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `telepon` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -235,7 +245,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id_member`, `nama`, `profil`, `email`, `alamat`, `telepon`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-('MBR-1', 'durika', 'default_member.png', 'durika@gmail.com', NULL, '', NULL, '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL, '2019-08-02 10:37:01', '2019-08-02 10:37:01'),
+('MBR-1', 'Durika123', '1565226972-sample 2.jpg', 'durika@gmail.com', 'Jalan Jalan', '0908', NULL, '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL, '2019-08-02 10:37:01', '2019-08-07 18:16:12'),
 ('MBR-3', 'durika', 'default_member.png', 'durika1@gmail.com', 'alamat2', '', NULL, '$2y$10$aHYjHdpTXsqi3kzY61BUfO4yjPf4jKiU19bSLXqzhFrBVJaSQNZvy', NULL, '2019-08-03 07:00:23', '2019-08-03 07:00:23');
 
 -- --------------------------------------------------------
