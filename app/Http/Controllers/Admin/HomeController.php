@@ -23,6 +23,8 @@ class HomeController extends Controller
         $this->middleware('admin.auth:admin');
     }
 
+
+
     /**
      * Show the Admin dashboard.
      *

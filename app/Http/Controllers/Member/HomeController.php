@@ -17,6 +17,8 @@ use DOMPDF;
 use App\Bukti;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\File;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
@@ -29,6 +31,79 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function provinsi(){
+        $client = new Client();
+
+        try{
+            $response = $client->get('https://api.rajaongkir.com/starter/province', array(
+                'headers' => array(
+                    'key' => '11b95e155f2f1d73259d2cf17d424d1b',
+                )
+            ));
+        } catch(RequestException $e){
+            var_dump($e->getResponse()->getBody()->getContents());
+        }
+
+        $json = $response->getBody()->getContents();
+
+        $array_result = json_decode($json, true);
+
+        // print_r($array_result);
+
+        return $array_result['rajaongkir']['results'];
+    }
+
+    public function kota(){
+        $client = new Client();
+
+        try{
+            $response = $client->get('https://api.rajaongkir.com/starter/city', array(
+                'headers' => array(
+                    'key' => '11b95e155f2f1d73259d2cf17d424d1b',
+                )
+            ));
+        } catch(RequestException $e){
+            var_dump($e->getResponse()->getBody()->getContents());
+        }
+
+        $json = $response->getBody()->getContents();
+
+        $array_result = json_decode($json, true);
+
+        // print_r($array_result);
+
+        return $array_result['rajaongkir']['results'];
+    }
+
+    public function ongkir(Request $request){
+        $bogor = 79;
+        $kurir = $request->kurir;
+        $tujuan = $request->kode_kota;
+
+        $client = new Client();
+
+        try{
+            $response = $client->request("POST", 'https://api.rajaongkir.com/starter/cost', array(
+                'body' => "origin=79&destination=".$tujuan."&weight=1000&courier=". $kurir."",
+                'headers' => [
+                    'key' => '11b95e155f2f1d73259d2cf17d424d1b',
+                    'content-type' => 'application/x-www-form-urlencoded',
+                ]
+            ));
+        } catch(RequestException $e){
+            var_dump($e->getResponse()->getBody()->getContents());
+        }
+
+        $json = $response->getBody()->getContents();
+
+        $array_result = json_decode($json, true);
+
+        // print_r($array_result);
+
+        return $array_result['rajaongkir']['results'];
+    }
+
+
     public function index() {
 
         if(Auth::guard("member")->check()){
@@ -292,6 +367,10 @@ class HomeController extends Controller
         $invoice->jatuh_tempo = $jatuh_tempo;
 
         $invoice->telepon = $request->telepon;
+
+        $invoice->ongkir = $request->ongkir;
+
+        $invoice->total = $request->total;
 
         $invoice->status = "menunggu pembayaran";
 

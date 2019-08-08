@@ -80,9 +80,9 @@
                         <div>Atas Nama: {{ $invoice->atas_nama }}</div>
                         <div>Telepon: {{ $invoice->telepon }}</div>
                         <div>Alamat: {{ $invoice->alamat_penerima }}</div>
+                        <div>Ongkir: Rp{{ $invoice->ongkir }}</div>
+                        <div>Total: Rp{{ $invoice->total }}</div>
                     </div>
-    
-    
     
                 </div>
     
@@ -105,7 +105,6 @@
                                     <td class="center">{{ $i_key + 1 }}</td>
                                     <td class="left strong">{{ $i->ib_ke_barang->nama_barang }}</td>
                                     <td class="left">{{ $i->ib_ke_barang->kategori_ke_barang->nama_kategori }}</td>
-        
                                     <td class="right"><sup>Rp</sup>{{ $i->ib_ke_barang->harga_barang }}</td>
                                     <td class="center">{{ $i->jumlah }}</td>
                                     <td class="right"><sup>Rp</sup>{{ $i->total }}</td>

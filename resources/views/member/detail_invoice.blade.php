@@ -18,6 +18,7 @@
     <div class="card">
         <form class="form-invoice" action="{{ route('member.konfirmasi_invoice', $invoice->kode_invoice) }}" method="POST">
             @csrf
+            <input type="hidden" name="ongkir">
             <div class="card-header">
                 Invoice
                 <strong>#{{ $invoice->kode_invoice }}</strong>
@@ -108,8 +109,65 @@
                                 <textarea class="form-control" name="alamat_penerima" placeholder="Alamat penerima"></textarea>
                             </div>
                         </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Provinsi
+                                    </div>
+                                </div>
+                                <select name="provinsi" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Kota
+                                    </div>
+                                </div>
+                                <select name="kota" class="form-control">
+                                    <option>Pilih provinsi dahulu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Kode pos
+                                    </div>
+                                </div>
+                                <input name="kode_pos" value="" readonly class="form-control bg-white">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Kurir
+                                    </div>
+                                </div>
+                                <select name="kurir" class="form-control">
+                                    <option>Pilih kota dahulu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        Paket 
+                                    </div>
+                                </div>
+                                <select name="paket" class="form-control">
+                                    <option>Pilih Kurir terlebih dahulu</option>
+                                </select>
+                            </div>
+                        </div>
+                        {{-- <button type="button" class="btn btn-info btn-hitung text-right"><i class="fas fa-calculator"></i> hitung ongkir</button> --}}
                     </div>
-    
     
     
                 </div>
@@ -150,30 +208,18 @@
                     <div class="col-lg-4 col-sm-5 ml-auto">
                         <table class="table table-clear">
                             <tbody>
-                                {{-- <tr>
-                                    <td class="left">
-                                        <strong>Subtotal</strong>
-                                    </td>
-                                    <td class="right">$8.497,00</td>
-                                </tr>
                                 <tr>
                                     <td class="left">
-                                        <strong>Discount (20%)</strong>
+                                        <strong>Ongkir</strong>
                                     </td>
-                                    <td class="right">$1,699,40</td>
-                                </tr>
-                                <tr>
-                                    <td class="left">
-                                        <strong>VAT (10%)</strong>
-                                    </td>
-                                    <td class="right">$679,76</td>
-                                </tr> --}}
+                                    <td class="right ongkir">Tujuan Belum Ditentukan</td>
+                                </tr> 
                                 <tr>
                                     <td class="left">
                                         <strong>Total</strong>
                                     </td>
                                     <td class="right">
-                                        <strong><sup>Rp</sup>{{ $invoice_sum }}</strong>
+                                        <strong><sup></sup><span class="total-barang" data-total="{{ $invoice_sum }}">Tujuan Belum Ditentukan</span></strong>
                                     </td>
                                 </tr>
                             </tbody>
@@ -184,6 +230,9 @@
                 </div>
     
             </div>
+            <input type="hidden" name="total">
+            <input type="hidden" name="nama_kota">
+            <input type="hidden" name="nama_provinsi">
             </form>
         </div>
     </div>
@@ -194,11 +243,166 @@
     <script>
         $(function () {
 
-            $(".btn-konfirmasi").click(function(){
+            $(document).on("change", "[name='paket']", function(){
+                var ongkir = parseInt($(this).val());
+                var total = parseInt($(".total-barang").attr("data-total"));
+                var tot = ongkir + total;
+                $(".total-barang").text("");
+                $(".total-barang").text("Rp" + tot);
+                $(".ongkir").text("");
+                $(".ongkir").text("Rp" + ongkir);
+                $("[name='total']").val(tot);
+                $("[name='ongkir']").val(ongkir);
+            });
+
+            $(document).on("change", "[name='kurir']", function(){
+                var kota = $("[name='kota']").val();
+                var kode_pos = $("[name='kode_pos']").val();
+                var provinsi = $("[name='provinsi']").val();
+                var kurir = $("[name='kurir']").val();
+                if(kota == ""){
+                    Swal.fire({
+                        title: 'Belum Memilih Provinsi',
+                        html: "Harap pilih dahulu Provinsi tujuan",
+                        type: "warning",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
+                }else if(kode_pos == ""){
+                    Swal.fire({
+                        title: 'Belum Memilih Kota',
+                        html: "Harap pilih dahulu kota tujuan",
+                        type: "warning",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
+                }else if(provinsi == ""){
+                    Swal.fire({
+                        title: 'Belum Memilih Provinsi',
+                        html: "Harap pilih dahulu Provinsi tujuan",
+                        type: "warning",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
+
+                }else{
+                    $.ajax({
+                    type: "get",
+                    url: "{{ url('member/ongkir') }}",
+                    data:{
+                        "kode_kota": kota,
+                        'kurir': kurir
+                    },
+                    success: function(hasil){
+                        $("[name='paket']").html("");
+                        // console.log(hasil[0]['costs']);
+                            $("[name='paket']").append(
+                                "<option>Pilih Paket</option>"
+                            );
+                        for(var i = 0; i < hasil[0]['costs'].length; i++){
+                            // console.log(hasil[0]['costs'][i]['service']);
+                            $("[name='paket']").append(
+                                // "<option>Pilih Paket</option>" +
+                                "<option value='" + hasil[0]['costs'][i]['cost'][0]['value'] + "' data-ongkir='" + hasil[0]['costs'][i]['cost'][0]['value'] + "'>" + hasil[0]['costs'][i]['description'] + " / Rp." + hasil[0]['costs'][i]['cost'][0]['value'] + " (est. " + hasil[0]['costs'][i]['cost'][0]['etd'] + " hari)</option>" 
+                            );
+                        }
+                        // $("[name='paket']").html("");
+                        // $("[name='paket']").append(
+                        //     "<option value='" + hasil[0]['code'] + "'>" + hasil + "</option>" 
+                        // );
+                    }
+                });
+                }
+            });
+
+
+            $("[name='kota']").on("change", function(){
+                
+                var city_id = $(this).val();
+                var province_id = "";
+                var kode_pos = "";
+                // console.log(kode_provinsi);
+
+                $.ajax({
+                    type: "get",
+                    url: "{{ url('member/kota') }}",
+                    // data:{
+
+                    // }
+                    success: function(hasil){
+                        // console.log(hasil);
+                        for(var i = 0; i < hasil.length; i++){
+                            if(hasil[i]['city_id'] == city_id){
+                                var kode_pos = hasil[i]['postal_code'];
+                                var province_id = hasil[i]['province_id'];
+                            }
+                        }
+                        $("[name='kode_pos']").val("");
+                        $("[name='kode_pos']").val(kode_pos);
+
+                        $("[name='kurir']").html("");
+                        $("[name='kurir']").append(
+                            "<option value='kosong'>Pilih Kurir</option>" +
+                            "<option value='jne' data-city='" + city_id + "'>JNE</option>" +
+                            "<option value='pos' data-city='" + city_id + "'>POS</option>"
+                        );
+                        // console.log(kode_pos);
+                    }
+                });
+            });
+
+            $("[name='provinsi']").on("change", function(){
+                
+                var province_id = $(this).val();
+
+                $.ajax({
+                    type: "get",
+                    url: "{{ url('member/kota') }}",
+                    // data:{
+
+                    // }
+                    success: function(hasil){
+                        $("[name='kota']").html("");
+                        for(var i = 0; i < hasil.length; i++){
+                            if(hasil[i]['province_id'] == province_id){
+                                // console.log(hasil[i]['city_name']);
+
+                            $("[name='kota']").append(
+                                "<option value='" + hasil[i]['city_id'] + "' data-kota='" + hasil[i]['city_name'] + "'> " + hasil[i]['type'] + "/" + hasil[i]['city_name'] + "</option>"
+                            );
+                            }
+                        }
+                    }
+                });
+            });
+
+            provinsi();
+            function provinsi(){
+                $.ajax({
+                    type: "get",
+                    url: "{{ url('member/provinsi') }}",
+                    success: function(hasil){
+                        for(var i = 0; i < hasil.length; i++){
+                            // console.log(hasil[i]);
+                            $("[name='provinsi']").append(
+                                "<option value='" + hasil[i]['province_id'] + "' data-provinsi='" + hasil[i]['province'] + "'>" + hasil[i]['province'] + "</option>"
+                            );
+                        }
+                    }
+                });
+            }
+
+            $(document).on("click", ".btn-konfirmasi", function(){
                 var nama = $("[name='atas_nama']").val();
                 var alamat = $("[name='alamat_penerima']").val();
                 var telepon = $("[name='telepon']").val();
-
+                var total = $(".total-barang").text();
                 if(nama == ""){
                     Swal.fire({
                         title: 'Nama penerima kosong',
@@ -229,8 +433,22 @@
                             popup: 'animated shake'
                         }
                     })
+                }else if(total == "Tujuan Belum Ditentukan"){
+                    
+                    Swal.fire({
+                        title: 'Data Tujuan Belum Selesai',
+                        html: "Harap isi keseluruhan data penerima",
+                        type: "warning",
+                        animation: false,
+                        customClass: {
+                            popup: 'animated shake'
+                        }
+                    })
                 }else{
+                    // console.log($("[name='kota']").attr("data-kota"));
+                    // $("[name='nama_provinsi']").val($("[name='provinsi']").attr("data-provinsi"));
                     $(".form-invoice").submit();
+
                 }
             });
 

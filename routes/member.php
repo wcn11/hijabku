@@ -25,6 +25,10 @@ Route::group(['namespace' => 'Member'], function() {
 
     Route::group(['middleware' => ['member.auth', "member.jatuh_tempo"]], function(){
 
+        Route::get("provinsi", "HomeController@provinsi");
+        Route::get("kota", "HomeController@kota");
+        Route::get("ongkir", "HomeController@ongkir");
+
         Route::post("data/keranjang", "HomeController@data_keranjang");
         Route::post("data/invoice", "HomeController@data_invoice");
         Route::post("data/history", "HomeController@data_history");

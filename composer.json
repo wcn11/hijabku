@@ -12,8 +12,10 @@
         "barryvdh/laravel-dompdf": "^0.8.4",
         "bitfumes/laravel-multiauth": "^1.0",
         "fideloper/proxy": "^4.0",
+        "kozz/laravel-guzzle-provider": "^6.1",
         "laravel/framework": "5.8.*",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "steevenz/rajaongkir": "^2.2"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

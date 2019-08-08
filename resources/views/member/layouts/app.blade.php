@@ -456,6 +456,8 @@ input[type=number]
                                     <th>A/n</th>
                                     <th>Alamat</th>
                                     <th>telepon</th>
+                                    <th>ongkir</th>
+                                    <th>total</th>
                                     <th>Tanggal invoice</th>
                                     <th>Jatuh tempo</th>
                                     <th>status</th>
@@ -569,6 +571,8 @@ input[type=number]
                                             <th scope="col">Kode invoice</th>
                                             <th scope="col">Atas Nama</th>
                                             <th scope="col">Alamat Penerima</th>
+                                            <th scope="col">ongkir</th>
+                                            <th scope="col">total</th>
                                             <th scope="col">Tanggal Invoice</th>
                                             <th scope="col">Jatuh Tempo</th>
                                             <th scope="col">Telepon</th>
@@ -706,6 +710,8 @@ input[type=number]
                                         "<td>" + hasil[i]['kode_invoice'] + "</td>" +
                                         "<td>" + hasil[i]['atas_nama'] + "</td>" +
                                         "<td>" + hasil[i]['alamat_penerima'] + "</td>" +
+                                        "<td>" + hasil[i]['ongkir'] + "</td>" +
+                                        "<td>" + hasil[i]['total'] + "</td>" +
                                         "<td>" + hasil[i]['tanggal_invoice'] + "</td>" +
                                         "<td>" + hasil[i]['jatuh_tempo'] + "</td>" +
                                         "<td>" + hasil[i]['telepon'] + "</td>" +
@@ -784,6 +790,8 @@ input[type=number]
                                             hasil[i]['atas_nama'] +
                                         "@endif" +
                                     "</td>" +
+                                    "<td>" + hasil[i]['ongkir'] + "</td>" +
+                                    "<td>" + hasil[i]['total'] + "</td>" + 
                                     "<td>" +
                                         "@if(" + hasil[i]['alamat_penerima']->isEmpty() + ")" +
                                             "belum diisi" +
