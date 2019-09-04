@@ -23,7 +23,7 @@
 
         <div class="container">
             <div class="table-responsive">
-                <table class="table nowrap table-hover table-borderless tabel-barang">
+                <table class="table table-hover table-borderless tabel-barang">
                     <thead>
                         <tr class="text-center">
                             <th>No</th>

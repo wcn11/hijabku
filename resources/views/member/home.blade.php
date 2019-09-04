@@ -465,148 +465,140 @@
             });
             });
 
-            // $(document).ready(function() {
-            // // $(".up").click(function() {
-            // //     $('html, body').animate({
-            // //         scrollTop: $(".down").offset().top
-            // //     }, 1000);
-            // // });
-            // });
     </script>
     @if(Auth::guard("member")->check())
     <script>
         $(document).ready(function(){
 
-            
+            // // ambil data
+            // $.ajax({
+            //     type: "post", 
+            //     url: "{{ url('member/keranjang/ambildata') }}",
+            //     data: {
+            //         "_token": $("[name='_token']").val()
+            //     },
+            //     success: function(hasil){
+            //         $(".angka-keranjang").text("");
+            //         $(".angka-keranjang").text(hasil.length);
+            //         for(var i = 0; i < hasil.length; i++){
+            //             $(".btn-tambah-keranjang-" + hasil[i][0]).hide();
+            //             $(".btn-keluarkan-" + hasil[i][0]).show();
+            //         }
+            //     }
+            // });
 
-            $(document).on("click", ".btn-keluarkan" ,function(){
-                var kode = $(this).attr("data-kode");
-                var barang = $(this).attr("data-barang");
-                var keranjang = $(".angka-keranjang").text();
-                var item_keranjang = $(".item-keranjang-" + kode);
+            // $(document).on("click", ".btn-keluarkan" ,function(){
+            //     var kode = $(this).attr("data-kode");
+            //     var barang = $(this).attr("data-barang");
+            //     var keranjang = $(".angka-keranjang").text();
+            //     var item_keranjang = $(".item-keranjang-" + kode);
 
-                $.ajax({
-                    type: "post",
-                    url: "{{ url('member/keranjang/keluarkan') }}",
-                    data:{
-                        "_token" : $("[name='_token']").val(),
-                        kode_barang: kode
-                    },
-                    success: function(hasil){
-                        // console.log(hasil[0]);
-                        $(".keranjang-container").html(""); // menghapus seluruh elemen yang ada pada tabel keranjang (didalam <tbody>)
-                        $(".btn-tambah-keranjang-" + kode).show();
-                        $(".btn-keluarkan-" + kode).hide();
-                        $(".item-keranjang-" + barang).hide();
+            //     $.ajax({
+            //         type: "post",
+            //         url: "{{ url('member/keranjang/keluarkan') }}",
+            //         data:{
+            //             "_token" : $("[name='_token']").val(),
+            //             kode_barang: kode
+            //         },
+            //         success: function(hasil){
+            //             // console.log(hasil[0]);
+            //             $(".keranjang-container").html(""); // menghapus seluruh elemen yang ada pada tabel keranjang (didalam <tbody>)
+            //             $(".btn-tambah-keranjang-" + kode).show();
+            //             $(".btn-keluarkan-" + kode).hide();
+            //             $(".item-keranjang-" + barang).hide();
                         
-                        $(".angka-keranjang").text("");
-                        $(".angka-keranjang").text(hasil.length);
+            //             $(".angka-keranjang").text("");
+            //             $(".angka-keranjang").text(hasil.length);
 
                         
-                        if(hasil.length == 0){
-                            $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
-                        }else{
-                            for(var i = 0; i < hasil.length; i++){
-                                var counter = i + 1;
-                                $(".keranjang-container").append(
+            //             if(hasil.length == 0){
+            //                 $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
+            //             }else{
+            //                 for(var i = 0; i < hasil.length; i++){
+            //                     var counter = i + 1;
+            //                     $(".keranjang-container").append(
                                     
-                                    "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
-                                        "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
-                                        "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
-                                        "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
-                                        "<td>" +
-                                            "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
-                                            "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
-                                        "</td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
-                                        "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
-                                        "<td>" +
-                                            "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
-                                            "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
-                                        "</td>" +
-                                    "</tr>"
-                                );
-                            }
-                        }
-                    }
-                });
-            });
+            //                         "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
+            //                             "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
+            //                             "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
+            //                             "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
+            //                             "<td>" +
+            //                                 "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
+            //                                 "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+            //                             "</td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+            //                             "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
+            //                             "<td>" +
+            //                                 "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+            //                                 "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
+            //                             "</td>" +
+            //                         "</tr>"
+            //                     );
+            //                 }
+            //             }
+            //         }
+            //     });
+            // });
 
-            // ambil data
+            // $(document).on("click", ".btn-tambah-keranjang", function(){
 
-            $.ajax({
-                type: "post", 
-                url: "{{ url('member/keranjang/ambildata') }}",
-                data: {
-                    "_token": $("[name='_token']").val()
-                },
-                success: function(hasil){
-                    for(var i = 0; i < hasil.length; i++){
-                        $(".btn-tambah-keranjang-" + hasil[i][0]).hide();
-                        $(".btn-keluarkan-" + hasil[i][0]).show();
-                    }
-                }
-            });
+            //     var kode = $(this).attr("data-kode");
+            //     var keranjang = $(".angka-keranjang").text();
 
-            $(document).on("click", ".btn-tambah-keranjang", function(){
+            //     $.ajax({
+            //         type: "post",
+            //         url: "{{ url('member/tambah_keranjang') }}" + "/" + kode,
+            //         data: {
+            //             "_token": $("[name='_token']").val(),
+            //             kode_barang: kode
+            //         },
+            //         success: function(hasil){
 
-                var kode = $(this).attr("data-kode");
-                var keranjang = $(".angka-keranjang").text();
-
-                $.ajax({
-                    type: "post",
-                    url: "{{ url('member/tambah_keranjang') }}" + "/" + kode,
-                    data: {
-                        "_token": $("[name='_token']").val(),
-                        kode_barang: kode
-                    },
-                    success: function(hasil){
-
-                        if(hasil == "belum_login"){
-                            $("#modal-login").modal("show");
-                        }else{
-                            $(".btn-tambah-keranjang-" + kode).hide();
-                            $(".btn-keluarkan-" + kode).show();
+            //             if(hasil == "belum_login"){
+            //                 $("#modal-login").modal("show");
+            //             }else{
+            //                 $(".btn-tambah-keranjang-" + kode).hide();
+            //                 $(".btn-keluarkan-" + kode).show();
                             
-                        $(".angka-keranjang").text("");
-                        $(".angka-keranjang").text(hasil.length);
-                        $(".keranjang-container").html("");
+            //             $(".angka-keranjang").text("");
+            //             $(".angka-keranjang").text(hasil.length);
+            //             $(".keranjang-container").html("");
 
                         
-                        if(hasil.length == 0){
-                            $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
-                        }else{
-                            for(var i = 0; i < hasil.length; i++){
-                                var counter = i + 1;
-                                $(".keranjang-container").append(
+            //             if(hasil.length == 0){
+            //                 $(".keranjang-container").append("<tr class='text-center'><td colspan='9'>Belum ada barang</td></tr>");
+            //             }else{
+            //                 for(var i = 0; i < hasil.length; i++){
+            //                     var counter = i + 1;
+            //                     $(".keranjang-container").append(
                                     
-                                    "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
-                                        "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
-                                        "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
-                                        "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
-                                        "<td>" +
-                                            "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
-                                            "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
-                                        "</td>" +
-                                        "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
-                                        "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
-                                        "<td>" +
-                                            "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
-                                            "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
-                                        "</td>" +
-                                    "</tr>"
-                                );
-                            }
-                        }
-                    }
-                    }
-                });
+            //                         "<tr class='text-center item-keranjang-" + hasil[i]['kode_keranjang'] + " item-keranjang-" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'>" +
+            //                             "<td><input type='checkbox' class='anak-checkbox' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "' data-kode='" + hasil[i]['kode_keranjang'] + "'></td>" +
+            //                             "<th scope='row' class='counter-nomor-keranjang'>" + counter + "</th>" +
+            //                             "<td><img src='{{ url('images/barang/') }}" + "/" + hasil[i]['barang_ke_keranjang']['gambar'] + "' class='img-fluid'></td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['nama_barang'] + "</td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "</td>" +
+            //                             "<td>" +
+            //                                 "<div type='text' class='container-jumlah-" + hasil[i]['kode_keranjang'] + "' readonly> " + hasil[i]['jumlah'] + " </div>" +
+            //                                 "<input type='range' data-kode='" + hasil[i]['kode_keranjang'] + "' data-harga='" + hasil[i]['barang_ke_keranjang']['harga_barang'] + "' data-jumlah='" + hasil[i]['jumlah'] + "' readonly min='1' max='" + hasil[i]['barang_ke_keranjang']['stok'] + "' step='1' value='" + hasil[i]['jumlah'] + "' class='p-3 counter-keranjang counter-keranjang-" + hasil[i]['kode_keranjang'] + "'>" +
+            //                             "</td>" +
+            //                             "<td>" + hasil[i]['barang_ke_keranjang']['stok'] + "</td>" +
+            //                             "<td class='total-keranjang'>" + hasil[i]['total'] + "</td>" +
+            //                             "<td>" +
+            //                                 "<button class='btn btn-danger btn-hapus-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "' data-barang='" + hasil[i]['barang_ke_keranjang']['kode_barang'] + "'> hapus</button>" +
+            //                                 "<button class='btn btn-success btn-bayar-keranjang' data-kode='" + hasil[i]['kode_keranjang'] + "'> bayar</button>" +
+            //                             "</td>" +
+            //                         "</tr>"
+            //                     );
+            //                 }
+            //             }
+            //         }
+            //         }
+            //     });
 
-            });
+            // });
 
         });
     </script>

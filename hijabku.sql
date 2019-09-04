@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2019 at 07:48 AM
+-- Generation Time: Sep 04, 2019 at 06:34 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -84,9 +84,11 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`kode_barang`, `kode_kategori`, `nama_barang`, `stok`, `keterangan`, `gambar`, `harga_barang`, `dibuat`, `diupdate`) VALUES
-('BRG-1-1', 'KTG-1', 'Ciput 1', 11, 'engga tau', '1565082149-student.jpg', 10000, '2019-08-08 01:32:07', '2019-08-07 18:32:07'),
-('BRG-1-2', 'KTG-2', 'ciput 2', 7, 'engga ada', '1565082072-ciput rajut.jpg', 12000, '2019-08-08 03:51:38', '2019-08-07 20:51:38'),
-('BRG-3-3', 'KTG-3', 'ciput 3', 7, 'weaef', '1565082109-ciput brokat.jpg', 20000, '2019-08-08 01:49:10', '2019-08-07 18:49:10');
+('BRG-1-1', 'KTG-1', 'Hijab Ikat', 10, 'Hijab adalah kata dalam bahasa Arab yang berarti \"penghalang\". Pada beberapa negara berbahasa Arab serta negara-negara Barat, kata hijab lebih sering merujuk kepada kerudung yang digunakan oleh wanita muslim (lihat jilbab).', '1565293493-sample hijab1.jpg', 50000, '2019-08-08 19:44:53', '2019-08-08 12:44:53'),
+('BRG-1-2', 'KTG-2', 'Ciput Rajut', 5, 'Ciput rajut menutup seluruh kepala, termasuk jika memiliki rambut panjang, rambut akan masuk kedalam ciput sehingga memberi volume kepala, dan bisa membuat penampilan lebih terkesan rapih, dan kepala terkesan bervolume dan cantik. Ciput rajut yang tersedia di hijabcomplements memiliki bahan rajut grade A, lembut, elastis menyesuaikan bentuk kepala, tapi nggak melar. Nyaman dipakai tidak membuat pusing, budek dan panas :) jadi nyaman banget deh...', '1565082072-ciput rajut.jpg', 12000, '2019-08-08 19:39:20', '2019-08-08 12:39:20'),
+('BRG-1-5', 'KTG-1', 'hijab segi empat', 9, 'adem dan nyaman', '1565322122-sample 1.jpg', 15000, '2019-08-08 20:42:02', '2019-08-08 20:42:02'),
+('BRG-3-3', 'KTG-2', 'Ciput Brokat', 4, 'Ciput jenis ini sebenarnya merupakan ciput jenis bandana yang dimodifikasi dengan menggunakan bahan lain yaitu brokat atau renda. Kelebihan ciput brokat adalah penggunaan bahannya yang menimbulkan kesan lebih feminim dan stylish.', '1565082109-ciput brokat.jpg', 20000, '2019-08-09 01:20:41', '2019-08-08 18:20:41'),
+('BRG-3-4', 'KTG-3', 'Pashmina Oren', 10, 'adalah jenis wol kashmir sempurna dan tekstil yang terbuat dari wol tersebut dan pertama kali ditenun di India. Nama tersebut berasal dari kata Pashmina, bahasa Persia untuk \"terbuat dari wol\".', '1565293593-sample pashmina.jpg', 40000, '2019-08-09 01:09:50', '2019-08-08 18:09:50');
 
 -- --------------------------------------------------------
 
@@ -107,9 +109,8 @@ CREATE TABLE `bukti` (
 --
 
 INSERT INTO `bukti` (`kode_bukti`, `id_member`, `kode_invoice`, `bukti`, `tanggal_upload`) VALUES
-('BKT-4-2-1', 'MBR-3', 'INV-4-1', '1565228942-elearning.jpg', '2019-08-07 18:49:02'),
-('BKT-4-3-2', 'MBR-3', 'INV-4-2', '1565238995-wp2529611-16k-wallpapers.jpg', '2019-08-08 04:36:35'),
-('BKT-4-4-3', 'MBR-3', 'INV-4-3', '1565236710-sample 1.jpg', '2019-08-07 20:58:30');
+('BKT-2-2-1', 'MBR-1', 'INV-2-1', '1565289848-daftar student.png', '2019-08-08 11:44:08'),
+('BKT-3-5-2', 'MBR-2', 'INV-3-4', '1565313357-login admin 1.png', '2019-08-08 18:15:57');
 
 -- --------------------------------------------------------
 
@@ -119,8 +120,10 @@ INSERT INTO `bukti` (`kode_bukti`, `id_member`, `kode_invoice`, `bukti`, `tangga
 
 CREATE TABLE `invoice` (
   `kode_invoice` varchar(30) NOT NULL,
-  `id_member` varchar(30) NOT NULL,
+  `id_member` varchar(25) NOT NULL,
   `atas_nama` varchar(50) DEFAULT NULL,
+  `ongkir` double DEFAULT NULL,
+  `total` double DEFAULT NULL,
   `alamat_penerima` varchar(100) DEFAULT NULL,
   `tanggal_invoice` timestamp NULL DEFAULT NULL,
   `jatuh_tempo` timestamp NULL DEFAULT NULL,
@@ -132,10 +135,12 @@ CREATE TABLE `invoice` (
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`kode_invoice`, `id_member`, `atas_nama`, `alamat_penerima`, `tanggal_invoice`, `jatuh_tempo`, `telepon`, `status`) VALUES
-('INV-4-1', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 01:48:33', '2019-08-15 01:48:33', '0908', 'terkonfirmasi'),
-('INV-4-2', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 01:49:19', '2019-08-15 01:49:19', '0908', 'menunggu konfirmasi'),
-('INV-4-3', 'MBR-1', 'Durika123', 'Jalan Jalan', '2019-08-08 03:52:02', '2019-08-15 03:52:02', '0908', 'menunggu konfirmasi');
+INSERT INTO `invoice` (`kode_invoice`, `id_member`, `atas_nama`, `ongkir`, `total`, `alamat_penerima`, `tanggal_invoice`, `jatuh_tempo`, `telepon`, `status`) VALUES
+('INV-2-1', 'MBR-1', 'durika', 40000, 52000, 'asd', '2019-08-08 18:43:43', '2019-08-15 18:43:43', 'asd', 'menunggu konfirmasi'),
+('INV-2-2', 'MBR-1', 'durika', 18000, 58000, 'Bukit Cimanggu City Kota Bogor', '2019-08-08 19:52:56', '2019-08-15 19:52:56', '085791419696', 'jatuh tempo'),
+('INV-2-3', 'MBR-1', 'ewr', 9000, 29000, '23', '2019-08-08 21:03:36', '2019-08-15 21:03:36', '23', 'jatuh tempo'),
+('INV-3-4', 'MBR-2', 'susiari', 9000, 89000, 'cimanggu city', '2019-08-09 01:11:31', '2019-08-16 01:11:31', '08123456789', 'menunggu konfirmasi'),
+('INV-4-5', 'MBR-3', 'vino aqnar', 18000, 38000, 'yasmin raya', '2019-08-09 01:22:31', '2019-08-16 01:22:31', '083819978547', 'menunggu pembayaran');
 
 -- --------------------------------------------------------
 
@@ -156,9 +161,11 @@ CREATE TABLE `invoice_barang` (
 --
 
 INSERT INTO `invoice_barang` (`kode_invoice_barang`, `kode_invoice`, `kode_barang`, `jumlah`, `total`) VALUES
-('IB-2-1', 'INV-4-1', 'BRG-1-2', 1, 12000),
-('IB-3-2', 'INV-4-2', 'BRG-3-3', 1, 20000),
-('IB-4-3', 'INV-4-3', 'BRG-1-2', 1, 12000);
+('IB-2-1', 'INV-2-1', 'BRG-1-2', 1, 12000),
+('IB-3-2', 'INV-2-2', 'BRG-3-4', 1, 40000),
+('IB-4-3', 'INV-2-3', 'BRG-3-3', 1, 20000),
+('IB-5-4', 'INV-3-4', 'BRG-3-4', 2, 80000),
+('IB-6-5', 'INV-4-5', 'BRG-3-3', 1, 20000);
 
 -- --------------------------------------------------------
 
@@ -201,24 +208,7 @@ CREATE TABLE `keranjang` (
 --
 
 INSERT INTO `keranjang` (`kode_keranjang`, `kode_barang`, `jumlah`, `id_member`, `total`, `tanggal_masuk`) VALUES
-('KRJG-2-2-1', 'BRG-1-2', 1, 'MBR-1', 12000, '2019-08-08 04:56:02');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `member`
---
-
-CREATE TABLE `member` (
-  `id_member` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nama` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+('KRJG-1-5-1', 'BRG-1-5', 1, 'MBR-1', 15000, '2019-08-09 03:47:10');
 
 -- --------------------------------------------------------
 
@@ -227,7 +217,7 @@ CREATE TABLE `member` (
 --
 
 CREATE TABLE `members` (
-  `id_member` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_member` varchar(25) CHARACTER SET latin1 NOT NULL,
   `nama` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `profil` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default_member.png',
   `email` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -245,8 +235,11 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id_member`, `nama`, `profil`, `email`, `alamat`, `telepon`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-('MBR-1', 'Durika123', '1565226972-sample 2.jpg', 'durika@gmail.com', 'Jalan Jalan', '0908', NULL, '$2y$10$R4fQUKh61FnepEysD33GXOYIf6kNkL6xX/uLtjzVsl1IKRy8Om6da', NULL, '2019-08-02 10:37:01', '2019-08-07 18:16:12'),
-('MBR-3', 'durika', 'default_member.png', 'durika1@gmail.com', 'alamat2', '', NULL, '$2y$10$aHYjHdpTXsqi3kzY61BUfO4yjPf4jKiU19bSLXqzhFrBVJaSQNZvy', NULL, '2019-08-03 07:00:23', '2019-08-03 07:00:23');
+('MBR-4', 'diandian', 'default_member.png', 'dian@gmail.com', NULL, NULL, NULL, '$2y$10$c3jDCLdspFC7XiS2nSDDHuACePIvRcYDNfJa89pMycX90ykPZZ7h6', NULL, '2019-08-08 20:53:43', '2019-08-08 20:53:43'),
+('MBR-1', 'durika', 'default_member.png', 'durika@gmail.com', NULL, NULL, NULL, '$2y$10$6vuovkCZFn1qXVwztkxlY.IUxiXWcFOJQzwXsiT31JqNH/ksNQZSW', NULL, '2019-08-08 11:35:22', '2019-08-08 11:35:22'),
+('MBR-5', 'sam karya', 'default_member.png', 'samkarya@gmail.com', NULL, NULL, NULL, '$2y$10$2sGadqv7oqz/64kK1keBw.sfCrPGJA9kXEAVsoyhpG9zkfROfVGRW', NULL, '2019-08-08 21:00:08', '2019-08-08 21:00:08'),
+('MBR-2', 'susiari', 'default_member.png', 'susiari@gmail.com', NULL, NULL, NULL, '$2y$10$qhMWedRUs8KzvGnnCvyofemMbUqmRXAadxV4LliBrCmHYbGS3WzZW', NULL, '2019-08-08 18:08:07', '2019-08-08 18:08:07'),
+('MBR-3', 'vino aqnar', 'default_member.png', 'vino@gmail.com', NULL, NULL, NULL, '$2y$10$s5ajfIJE3t8j5k7hRjdazu0VVT7biHfhVltmHKuSgeYGd9OwXKvhu', NULL, '2019-08-08 18:19:30', '2019-08-08 18:19:30');
 
 -- --------------------------------------------------------
 
@@ -332,14 +325,7 @@ ALTER TABLE `kategori`
 -- Indexes for table `keranjang`
 --
 ALTER TABLE `keranjang`
-  ADD PRIMARY KEY (`kode_keranjang`),
-  ADD KEY `kd_barang` (`kode_barang`);
-
---
--- Indexes for table `member`
---
-ALTER TABLE `member`
-  ADD UNIQUE KEY `member_email_unique` (`email`);
+  ADD PRIMARY KEY (`kode_keranjang`);
 
 --
 -- Indexes for table `members`
